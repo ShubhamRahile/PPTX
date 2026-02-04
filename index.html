@@ -1,0 +1,1826 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Yield Prediction using AI and Farming Chatbot - Complete Presentation</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: #f8f9fa;
+            overflow-x: hidden;
+            height: 100vh;
+            width: 100vw;
+        }
+
+        .presentation-container {
+            width: 100%;
+            height: 100%;
+            position: relative;
+        }
+
+        .slide {
+            width: 100%;
+            height: 100%;
+            position: absolute;
+            top: 0;
+            left: 0;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.5s ease;
+            overflow-y: auto;
+        }
+
+        .slide.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .navigation {
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 1000;
+            display: flex;
+            gap: 10px;
+            background: rgba(255, 255, 255, 0.9);
+            padding: 10px 20px;
+            border-radius: 50px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        .nav-btn {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: #2d5d2a;
+            color: white;
+            border: none;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+        }
+
+        .nav-btn:hover {
+            background: #4a7c59;
+            transform: translateY(-2px);
+        }
+
+        .slide-counter {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 1000;
+            background: rgba(45, 93, 42, 0.9);
+            color: white;
+            padding: 8px 15px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            backdrop-filter: blur(10px);
+        }
+
+        .slide-progress {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: rgba(45, 93, 42, 0.1);
+            z-index: 1000;
+        }
+
+        .slide-progress-bar {
+            height: 100%;
+            background: #2d5d2a;
+            width: 0%;
+            transition: width 0.3s ease;
+        }
+
+        .slide-indicators {
+            position: fixed;
+            bottom: 80px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 8px;
+            z-index: 999;
+        }
+
+        .slide-indicator {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: rgba(45, 93, 42, 0.3);
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .slide-indicator.active {
+            background: #2d5d2a;
+            transform: scale(1.2);
+        }
+
+        .slide-indicator:hover {
+            background: #4a7c59;
+        }
+
+        /* Hide scrollbar but keep functionality */
+        .slide::-webkit-scrollbar {
+            width: 5px;
+        }
+
+        .slide::-webkit-scrollbar-track {
+            background: rgba(45, 93, 42, 0.1);
+        }
+
+        .slide::-webkit-scrollbar-thumb {
+            background: rgba(45, 93, 42, 0.3);
+            border-radius: 10px;
+        }
+
+        /* Print styles */
+        @media print {
+            .navigation, .slide-counter, .slide-progress, .slide-indicators {
+                display: none !important;
+            }
+            
+            .slide {
+                position: relative !important;
+                opacity: 1 !important;
+                visibility: visible !important;
+                page-break-after: always;
+                height: auto !important;
+                min-height: 100vh !important;
+            }
+            
+            .presentation-container {
+                height: auto !important;
+            }
+        }
+
+        /* Mobile responsive */
+        @media (max-width: 768px) {
+            .slide-counter {
+                top: 10px;
+                right: 10px;
+                font-size: 0.8rem;
+                padding: 5px 10px;
+            }
+            
+            .navigation {
+                bottom: 10px;
+                padding: 8px 16px;
+            }
+            
+            .nav-btn {
+                width: 35px;
+                height: 35px;
+            }
+            
+            .slide-indicators {
+                bottom: 60px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="slide-progress">
+        <div class="slide-progress-bar" id="progress-bar"></div>
+    </div>
+    
+    <div class="slide-counter">
+        <span id="current-slide">1</span> / <span id="total-slides">11</span>
+    </div>
+    
+    <div class="slide-indicators" id="slide-indicators"></div>
+    
+    <div class="navigation">
+        <button class="nav-btn prev-btn" onclick="prevSlide()">
+            <i class="fas fa-chevron-left"></i>
+        </button>
+        <button class="nav-btn" onclick="toggleFullscreen()">
+            <i class="fas fa-expand"></i>
+        </button>
+        <button class="nav-btn next-btn" onclick="nextSlide()">
+            <i class="fas fa-chevron-right"></i>
+        </button>
+    </div>
+    
+    <div class="presentation-container">
+        
+        <!-- Slide 1: Title Slide -->
+        <div class="slide active" id="slide-1">
+            <div class="slide-container" style="width: 100%; min-height: 100vh; position: relative; background-color: #f4f7f1; overflow: hidden;">
+                <div class="bg-pattern" style="position: absolute; width: 100%; height: 100%; background-image: url('https://page.gensparksite.com/slides_images/9e0aef3c77c885365afe939f6f378ccc.webp'); background-size: cover; opacity: 0.15; z-index: 0;"></div>
+                <div class="hexagon-container" style="position: absolute; width: 100%; height: 100%; z-index: 0; opacity: 0.6;">
+                    <div class="hexagon hex1" style="position: absolute; width: 100px; height: 115px; background-color: #4a7c59; clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%); top: 50px; left: 100px; opacity: 0.2;"></div>
+                    <div class="hexagon hex2" style="position: absolute; width: 100px; height: 115px; background-color: #4a7c59; clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%); top: 150px; left: 180px; opacity: 0.15;"></div>
+                    <div class="hexagon hex3" style="position: absolute; width: 100px; height: 115px; background-color: #4a7c59; clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%); top: 100px; right: 150px; opacity: 0.2;"></div>
+                    <div class="hexagon hex4" style="position: absolute; width: 100px; height: 115px; background-color: #4a7c59; clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%); bottom: 120px; left: 200px; opacity: 0.15;"></div>
+                    <div class="hexagon hex5" style="position: absolute; width: 100px; height: 115px; background-color: #4a7c59; clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%); bottom: 80px; right: 180px; opacity: 0.2;"></div>
+                </div>
+                <div class="content" style="position: relative; z-index: 1; height: 100%; display: flex; flex-direction: column; justify-content: center; align-items: center; padding: 40px;">
+                    <h1 class="title" style="font-size: 3.5rem; font-weight: 700; color: #2d5d2a; text-align: center; margin-bottom: 20px; line-height: 1.2;">Yield Prediction using AI<br>and Farming Chatbot</h1>
+                    <p class="subtitle" style="font-size: 1.8rem; font-weight: 500; color: #4a7c59; text-align: center; margin-bottom: 60px;">Smart Agriculture for Tomorrow</p>
+                    <div class="tech-icons" style="display: flex; gap: 30px; margin-top: 20px;">
+                        <div class="tech-icon" style="width: 60px; height: 60px; display: flex; align-items: center; justify-content: center; background-color: rgba(255, 255, 255, 0.8); border-radius: 50%; box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);">
+                            <div class="icon-border" style="width: 50px; height: 50px; border: 2px solid #4a7c59; border-radius: 50%; display: flex; align-items: center; justify-content: center;">
+                                <i class="fas fa-robot text-2xl text-green-700"></i>
+                            </div>
+                        </div>
+                        <div class="tech-icon" style="width: 60px; height: 60px; display: flex; align-items: center; justify-content: center; background-color: rgba(255, 255, 255, 0.8); border-radius: 50%; box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);">
+                            <div class="icon-border" style="width: 50px; height: 50px; border: 2px solid #4a7c59; border-radius: 50%; display: flex; align-items: center; justify-content: center;">
+                                <i class="fas fa-seedling text-2xl text-green-700"></i>
+                            </div>
+                        </div>
+                        <div class="tech-icon" style="width: 60px; height: 60px; display: flex; align-items: center; justify-content: center; background-color: rgba(255, 255, 255, 0.8); border-radius: 50%; box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);">
+                            <div class="icon-border" style="width: 50px; height: 50px; border: 2px solid #4a7c59; border-radius: 50%; display: flex; align-items: center; justify-content: center;">
+                                <i class="fas fa-cloud-sun-rain text-2xl text-green-700"></i>
+                            </div>
+                        </div>
+                    </div>
+                    <p class="presenter mt-12" style="font-size: 1.4rem; font-weight: 500; color: #333; margin-top: 40px;">Presented by: <strong>Shubham Rahile</strong></p>
+                    <!-- <div class="logo-container" style="position: absolute; bottom: 30px; right: 40px; display: flex; align-items: center;">
+                        <!-- <span class="logo-text" style="font-size: 1.2rem; font-weight: 600; color: #2d5d2a; margin-right: 10px;">Farm360°</span> -->
+                        <!-- <div class="w-10 h-10 bg-green-700 rounded-md flex items-center justify-center">
+                            <i class="fas fa-leaf text-white"></i>
+                        </div> -->
+                    </div> -->
+                    <div class="footer" style="position: absolute; bottom: 15px; right: 30px; display: flex; align-items: center;">
+                    <div class="logo-text" style="font-size: 1rem; font-weight: 600; color: #2d5d2a; margin-right: 10px;">Farm360°</div>
+                    <div class="w-6 h-6 bg-green-700 rounded-md flex items-center justify-center">
+                        <i class="fas fa-leaf text-white text-xs"></i>
+                    </div>
+                </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 2: Introduction -->
+        <div class="slide" id="slide-2">
+            <div class="slide-container" style="width: 100%; min-height: 100vh; position: relative; background-color: #f4f7f1; overflow: hidden;">
+                <div class="title-bar" style="background-color: #2d5d2a; padding: 15px 40px; color: white; font-size: 2rem; font-weight: 600;">
+                    Introduction
+                </div>
+                <div class="content" style="display: flex; height: calc(100vh - 70px);">
+                    <div class="left-content" style="flex: 1; padding: 30px; display: flex; flex-direction: column; justify-content: center;">
+                        <h2 class="text-2xl font-semibold text-green-800">Modern Farming Challenges</h2>
+                        <div class="accent-line" style="width: 80px; height: 3px; background-color: #4a7c59; margin: 5px 0 15px 0;"></div>
+                        <p class="info-text" style="font-size: 1.2rem; color: #333; margin-bottom: 30px; line-height: 1.6;">
+                            Today's agriculture faces unprecedented challenges requiring innovative solutions. 
+                            AI technology offers farmers powerful tools to overcome these obstacles and transform farming practices.
+                        </p>
+                        <div class="challenge-container" style="display: flex; flex-wrap: wrap; gap: 20px; margin-top: 30px;">
+                            <div class="challenge-item" style="background-color: white; border-radius: 12px; padding: 15px; width: calc(50% - 10px); box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05); display: flex; align-items: center; transition: transform 0.3s ease;">
+                                <div class="icon-box" style="width: 60px; height: 60px; background-color: rgba(45, 93, 42, 0.1); border-radius: 50%; display: flex; justify-content: center; align-items: center; margin-right: 15px; flex-shrink: 0;">
+                                    <i class="fas fa-cloud-rain text-green-700 text-2xl"></i>
+                                </div>
+                                <div class="challenge-text" style="font-size: 1rem;">
+                                    <strong>Unpredictable Weather</strong><br/>
+                                    Climate change causing erratic patterns
+                                </div>
+                            </div>
+                            <div class="challenge-item" style="background-color: white; border-radius: 12px; padding: 15px; width: calc(50% - 10px); box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05); display: flex; align-items: center; transition: transform 0.3s ease;">
+                                <div class="icon-box" style="width: 60px; height: 60px; background-color: rgba(45, 93, 42, 0.1); border-radius: 50%; display: flex; justify-content: center; align-items: center; margin-right: 15px; flex-shrink: 0;">
+                                    <i class="fas fa-bug text-green-700 text-2xl"></i>
+                                </div>
+                                <div class="challenge-text" style="font-size: 1rem;">
+                                    <strong>Pest Outbreaks</strong><br/>
+                                    Invasive species and resistant pests
+                                </div>
+                            </div>
+                            <div class="challenge-item" style="background-color: white; border-radius: 12px; padding: 15px; width: calc(50% - 10px); box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05); display: flex; align-items: center; transition: transform 0.3s ease;">
+                                <div class="icon-box" style="width: 60px; height: 60px; background-color: rgba(45, 93, 42, 0.1); border-radius: 50%; display: flex; justify-content: center; align-items: center; margin-right: 15px; flex-shrink: 0;">
+                                    <i class="fas fa-leaf text-green-700 text-2xl"></i>
+                                </div>
+                                <div class="challenge-text" style="font-size: 1rem;">
+                                    <strong>Poor Soil Knowledge</strong><br/>
+                                    Limited data on soil composition
+                                </div>
+                            </div>
+                            <div class="challenge-item" style="background-color: white; border-radius: 12px; padding: 15px; width: calc(50% - 10px); box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05); display: flex; align-items: center; transition: transform 0.3s ease;">
+                                <div class="icon-box" style="width: 60px; height: 60px; background-color: rgba(45, 93, 42, 0.1); border-radius: 50%; display: flex; justify-content: center; align-items: center; margin-right: 15px; flex-shrink: 0;">
+                                    <i class="fas fa-user-graduate text-green-700 text-2xl"></i>
+                                </div>
+                                <div class="challenge-text" style="font-size: 1rem;">
+                                    <strong>Expert Guidance Gap</strong><br/>
+                                    Limited access to timely expertise
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="right-content" style="flex: 1; padding: 30px; display: flex; flex-direction: column; justify-content: center;">
+                        <div class="illustration-container" style="position: relative; height: 100%; display: flex; justify-content: center; align-items: center;">
+                            <svg class="illustration" viewbox="0 0 500 500" style="width: 100%; height: auto; max-height: 500px;">
+                                <defs>
+                                    <clippath id="circleClip">
+                                        <circle cx="250" cy="250" r="200"></circle>
+                                    </clippath>
+                                </defs>
+                                <circle cx="250" cy="250" fill="#e6f0e3" r="200"></circle>
+                                <g clip-path="url(#circleClip)">
+                                    <!-- Farm field background -->
+                                    <rect fill="#8cae7e" height="170" width="400" x="50" y="280"></rect>
+                                    <rect fill="#b4ce9b" height="30" width="400" x="50" y="250"></rect>
+                                    <!-- Traditional farmer on left -->
+                                    <g transform="translate(130, 300)">
+                                        <circle cx="0" cy="-30" fill="#e0c29f" r="20"></circle> <!-- head -->
+                                        <rect fill="#5d4037" height="60" width="30" x="-15" y="-10"></rect> <!-- body -->
+                                        <rect fill="#8d6e63" height="15" width="30" x="-15" y="-10"></rect> <!-- shirt -->
+                                        <line stroke="#5d4037" stroke-width="5" x1="0" x2="15" y1="50" y2="80"></line> <!-- leg -->
+                                        <line stroke="#5d4037" stroke-width="5" x1="0" x2="-15" y1="50" y2="80"></line> <!-- leg -->
+                                        <rect fill="#e0c29f" height="5" width="10" x="-25" y="-5"></rect> <!-- arm -->
+                                        <rect fill="#e0c29f" height="5" width="10" x="15" y="-5"></rect> <!-- arm -->
+                                        <line stroke="#8d6e63" stroke-width="3" x1="15" x2="35" y1="0" y2="-15"></line> <!-- tool handle -->
+                                    </g>
+                                    <!-- AI/Modern farmer on right -->
+                                    <g transform="translate(350, 290)">
+                                        <circle cx="0" cy="-30" fill="#e0c29f" r="20"></circle> <!-- head -->
+                                        <rect fill="#4a7c59" height="60" width="30" x="-15" y="-10"></rect> <!-- body -->
+                                        <rect fill="#6ca678" height="15" width="30" x="-15" y="-10"></rect> <!-- shirt -->
+                                        <line stroke="#4a7c59" stroke-width="5" x1="0" x2="15" y1="50" y2="80"></line> <!-- leg -->
+                                        <line stroke="#4a7c59" stroke-width="5" x1="0" x2="-15" y1="50" y2="80"></line> <!-- leg -->
+                                        <rect fill="#e0c29f" height="5" width="10" x="-25" y="-5"></rect> <!-- arm -->
+                                        <rect fill="#e0c29f" height="5" width="10" x="15" y="-5"></rect> <!-- arm -->
+                                        <!-- Tablet/device -->
+                                        <rect fill="#333" height="35" rx="2" width="25" x="-20" y="-5"></rect>
+                                        <rect fill="#88dfff" height="29" rx="1" width="19" x="-17" y="-2"></rect>
+                                    </g>
+                                    <!-- Cloud & data visualization -->
+                                    <g transform="translate(250, 150)">
+                                        <circle cx="0" cy="0" fill="#ffffff" opacity="0.9" r="30"></circle>
+                                        <circle cx="20" cy="-10" fill="#ffffff" opacity="0.9" r="25"></circle>
+                                        <circle cx="30" cy="10" fill="#ffffff" opacity="0.9" r="20"></circle>
+                                        <circle cx="-20" cy="-10" fill="#ffffff" opacity="0.9" r="25"></circle>
+                                        <circle cx="-30" cy="10" fill="#ffffff" opacity="0.9" r="20"></circle>
+                                        <!-- Data lines connecting cloud to modern farmer -->
+                                        <line stroke="#4a7c59" stroke-dasharray="5,3" stroke-width="2" x1="30" x2="100" y1="30" y2="140"></line>
+                                        <line stroke="#4a7c59" stroke-dasharray="5,3" stroke-width="2" x1="0" x2="100" y1="30" y2="140"></line>
+                                        <line stroke="#4a7c59" stroke-dasharray="5,3" stroke-width="2" x1="-30" x2="100" y1="30" y2="140"></line>
+                                        <!-- AI Symbol -->
+                                        <text fill="#2d5d2a" font-family="Poppins" font-size="18" font-weight="bold" text-anchor="middle" x="0" y="5">AI</text>
+                                    </g>
+                                </g>
+                                <!-- Text labels -->
+                                <text fill="#333" font-family="Poppins" font-size="14" text-anchor="middle" x="130" y="410">Traditional Farming</text>
+                                <text fill="#333" font-family="Poppins" font-size="14" text-anchor="middle" x="350" y="410">AI-Powered Farming</text>
+                                <!-- Connecting arrow showing progression -->
+                                <line stroke="#2d5d2a" stroke-width="2" x1="180" x2="300" y1="380" y2="380"></line>
+                                <polygon fill="#2d5d2a" points="300,380 290,375 290,385"></polygon>
+                            </svg>
+                        </div>
+                    </div>
+                </div>
+                <div class="footer" style="position: absolute; bottom: 15px; right: 30px; display: flex; align-items: center;">
+                    <div class="logo-text" style="font-size: 1rem; font-weight: 600; color: #2d5d2a; margin-right: 10px;">Farm360°</div>
+                    <div class="w-6 h-6 bg-green-700 rounded-md flex items-center justify-center">
+                        <i class="fas fa-leaf text-white text-xs"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 3: Problem Statement -->
+        <div class="slide" id="slide-3">
+            <div class="slide-container" style="width: 100%; min-height: 100vh; position: relative; background-color: #f4f7f1; overflow: hidden;">
+                <div class="title-bar" style="background-color: #2d5d2a; padding: 15px 40px; color: white; font-size: 2rem; font-weight: 600;">
+                    Problem Statement
+                </div>
+                <div class="content" style="padding: 30px 40px; height: calc(100vh - 70px);">
+                    <h2 class="text-2xl font-semibold text-green-800">Modern Farming Challenges</h2>
+                    <div class="accent-line" style="width: 80px; height: 3px; background-color: #4a7c59; margin: 5px 0 20px 0;"></div>
+                    <p class="info-text" style="font-size: 1.2rem; color: #333; margin-bottom: 30px; line-height: 1.6; max-width: 90%;">
+                        Today's farmers face critical challenges that impact crop yield and sustainability. 
+                        These interconnected issues require innovative AI-driven solutions to overcome traditional limitations.
+                    </p>
+                    <div class="challenges-grid" style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 30px; margin-top: 30px;">
+                        <div class="challenge-card" style="background-color: white; border-radius: 15px; padding: 25px; box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05); transition: transform 0.3s ease; display: flex; flex-direction: column; align-items: center; text-align: center; height: 100%;">
+                            <div class="icon-circle" style="width: 90px; height: 90px; background-color: rgba(45, 93, 42, 0.1); border-radius: 50%; display: flex; justify-content: center; align-items: center; margin-bottom: 20px;">
+                                <i class="fas fa-seedling text-green-700 text-4xl"></i>
+                            </div>
+                            <h3 class="challenge-title" style="font-size: 1.4rem; font-weight: 600; color: #2d5d2a; margin-bottom: 10px;">Poor Soil Knowledge</h3>
+                            <p class="challenge-desc" style="font-size: 1rem; color: #555; line-height: 1.5;">
+                                Limited understanding of soil composition, nutrients, and health leads to suboptimal planting decisions and resource waste
+                            </p>
+                        </div>
+                        <div class="challenge-card" style="background-color: white; border-radius: 15px; padding: 25px; box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05); transition: transform 0.3s ease; display: flex; flex-direction: column; align-items: center; text-align: center; height: 100%;">
+                            <div class="icon-circle" style="width: 90px; height: 90px; background-color: rgba(45, 93, 42, 0.1); border-radius: 50%; display: flex; justify-content: center; align-items: center; margin-bottom: 20px;">
+                                <i class="fas fa-cloud-sun-rain text-green-700 text-4xl"></i>
+                            </div>
+                            <h3 class="challenge-title" style="font-size: 1.4rem; font-weight: 600; color: #2d5d2a; margin-bottom: 10px;">Unpredictable Weather</h3>
+                            <p class="challenge-desc" style="font-size: 1rem; color: #555; line-height: 1.5;">
+                                Increasing climate variability makes traditional forecasting unreliable, resulting in crop damage and yield loss
+                            </p>
+                        </div>
+                        <div class="challenge-card" style="background-color: white; border-radius: 15px; padding: 25px; box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05); transition: transform 0.3s ease; display: flex; flex-direction: column; align-items: center; text-align: center; height: 100%;">
+                            <div class="icon-circle" style="width: 90px; height: 90px; background-color: rgba(45, 93, 42, 0.1); border-radius: 50%; display: flex; justify-content: center; align-items: center; margin-bottom: 20px;">
+                                <i class="fas fa-user-graduate text-green-700 text-4xl"></i>
+                            </div>
+                            <h3 class="challenge-title" style="font-size: 1.4rem; font-weight: 600; color: #2d5d2a; margin-bottom: 10px;">Lack of Expert Guidance</h3>
+                            <p class="challenge-desc" style="font-size: 1rem; color: #555; line-height: 1.5;">
+                                Limited access to agricultural specialists and real-time advice when crucial farming decisions need to be made
+                            </p>
+                        </div>
+                        <div class="challenge-card" style="background-color: white; border-radius: 15px; padding: 25px; box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05); transition: transform 0.3s ease; display: flex; flex-direction: column; align-items: center; text-align: center; height: 100%;">
+                            <div class="icon-circle" style="width: 90px; height: 90px; background-color: rgba(45, 93, 42, 0.1); border-radius: 50%; display: flex; justify-content: center; align-items: center; margin-bottom: 20px;">
+                                <i class="fas fa-bug text-green-700 text-4xl"></i>
+                            </div>
+                            <h3 class="challenge-title" style="font-size: 1.4rem; font-weight: 600; color: #2d5d2a; margin-bottom: 10px;">Pest & Disease Outbreaks</h3>
+                            <p class="challenge-desc" style="font-size: 1rem; color: #555; line-height: 1.5;">
+                                Difficult early detection and identification leads to widespread crop damage and excessive pesticide use
+                            </p>
+                        </div>
+                    </div>
+                </div>
+                <div class="footer" style="position: absolute; bottom: 15px; right: 30px; display: flex; align-items: center;">
+                    <div class="logo-text" style="font-size: 1rem; font-weight: 600; color: #2d5d2a; margin-right: 10px;">Farm360°</div>
+                    <div class="w-6 h-6 bg-green-700 rounded-md flex items-center justify-center">
+                        <i class="fas fa-leaf text-white text-xs"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 4: Proposed Solutions -->
+        <div class="slide" id="slide-4">
+            <div class="slide-container" style="width: 100%; min-height: 100vh; position: relative; background-color: #f4f7f1; overflow: hidden;">
+                <div class="title-bar" style="background-color: #2d5d2a; padding: 15px 40px; color: white; font-size: 2rem; font-weight: 600;">
+                    Proposed Solutions
+                </div>
+                <div class="content" style="display: flex; height: calc(100vh - 70px);">
+                    <div class="left-content" style="flex: 1; padding: 30px; display: flex; flex-direction: column; justify-content: center;">
+                        <h2 class="text-2xl font-semibold text-green-800">AI-Powered Farming Solutions</h2>
+                        <div class="accent-line" style="width: 80px; height: 3px; background-color: #4a7c59; margin: 5px 0 15px 0;"></div>
+                        <p class="info-text" style="font-size: 1.2rem; color: #333; margin-bottom: 30px; line-height: 1.6;">
+                            Our integrated platform offers smart solutions to transform traditional farming into 
+                            data-driven agriculture, empowering farmers with precision tools and AI insights.
+                        </p>
+                        <div class="solution-container" style="display: flex; flex-wrap: wrap; gap: 20px; margin-top: 30px;">
+                            <div class="solution-item" style="background-color: white; border-radius: 12px; padding: 15px; width: calc(50% - 10px); box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05); display: flex; align-items: center; transition: transform 0.3s ease;">
+                                <div class="icon-box" style="width: 60px; height: 60px; background-color: rgba(45, 93, 42, 0.1); border-radius: 50%; display: flex; justify-content: center; align-items: center; margin-right: 15px; flex-shrink: 0;">
+                                    <i class="fas fa-seedling text-green-700 text-2xl"></i>
+                                </div>
+                                <div class="solution-text" style="font-size: 1rem;">
+                                    <strong>AI Crop Recommendation</strong><br/>
+                                    Personalized crop selection based on soil conditions and market trends
+                                </div>
+                            </div>
+                            <div class="solution-item" style="background-color: white; border-radius: 12px; padding: 15px; width: calc(50% - 10px); box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05); display: flex; align-items: center; transition: transform 0.3s ease;">
+                                <div class="icon-box" style="width: 60px; height: 60px; background-color: rgba(45, 93, 42, 0.1); border-radius: 50%; display: flex; justify-content: center; align-items: center; margin-right: 15px; flex-shrink: 0;">
+                                    <i class="fas fa-comments text-green-700 text-2xl"></i>
+                                </div>
+                                <div class="solution-text" style="font-size: 1rem;">
+                                    <strong>Farming Chatbot</strong><br/>
+                                    24/7 expert guidance and real-time problem solving assistance
+                                </div>
+                            </div>
+                            <div class="solution-item" style="background-color: white; border-radius: 12px; padding: 15px; width: calc(50% - 10px); box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05); display: flex; align-items: center; transition: transform 0.3s ease;">
+                                <div class="icon-box" style="width: 60px; height: 60px; background-color: rgba(45, 93, 42, 0.1); border-radius: 50%; display: flex; justify-content: center; align-items: center; margin-right: 15px; flex-shrink: 0;">
+                                    <i class="fas fa-cloud-sun-rain text-green-700 text-2xl"></i>
+                                </div>
+                                <div class="solution-text" style="font-size: 1rem;">
+                                    <strong>6-Month Weather Forecast</strong><br/>
+                                    Long-term climate predictions for better seasonal planning
+                                </div>
+                            </div>
+                            <div class="solution-item" style="background-color: white; border-radius: 12px; padding: 15px; width: calc(50% - 10px); box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05); display: flex; align-items: center; transition: transform 0.3s ease;">
+                                <div class="icon-box" style="width: 60px; height: 60px; background-color: rgba(45, 93, 42, 0.1); border-radius: 50%; display: flex; justify-content: center; align-items: center; margin-right: 15px; flex-shrink: 0;">
+                                    <i class="fas fa-microscope text-green-700 text-2xl"></i>
+                                </div>
+                                <div class="solution-text" style="font-size: 1rem;">
+                                    <strong>Pest & Disease Detection</strong><br/>
+                                    Early identification with 95% accuracy using image recognition
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="right-content" style="flex: 1; padding: 30px; display: flex; flex-direction: column; justify-content: center;">
+                        <div class="illustration-container" style="position: relative; height: 100%; display: flex; justify-content: center; align-items: center;">
+                            <svg class="illustration" viewbox="0 0 500 500" style="width: 100%; height: auto; max-height: 500px;">
+                                <defs>
+                                    <clippath id="circleClip">
+                                        <circle cx="250" cy="250" r="200"></circle>
+                                    </clippath>
+                                </defs>
+                                <circle cx="250" cy="250" fill="#e6f0e3" r="200"></circle>
+                                <!-- Central smartphone/device -->
+                                <g transform="translate(250, 250)">
+                                    <rect fill="#4a7c59" height="150" rx="10" width="100" x="-50" y="-75"></rect>
+                                    <rect fill="#ffffff" height="140" rx="5" width="90" x="-45" y="-70"></rect>
+                                    <!-- Screen elements -->
+                                    <rect fill="#e9f5e6" height="25" rx="3" width="70" x="-35" y="-60"></rect>
+                                    <rect fill="#8cae7e" height="15" rx="2" width="40" x="-30" y="-55"></rect>
+                                    <rect fill="#e9f5e6" height="25" rx="3" width="70" x="-35" y="-25"></rect>
+                                    <rect fill="#8cae7e" height="15" rx="2" width="40" x="-30" y="-20"></rect>
+                                    <rect fill="#e9f5e6" height="25" rx="3" width="70" x="-35" y="10"></rect>
+                                    <circle cx="-20" cy="22.5" fill="#8cae7e" r="7.5"></circle>
+                                    <rect fill="#e9f5e6" height="25" rx="3" width="70" x="-35" y="45"></rect>
+                                    <rect fill="#8cae7e" height="15" rx="2" width="50" x="-25" y="50"></rect>
+                                    <!-- Chatbot icon on screen -->
+                                    <circle cx="20" cy="-45" fill="#4a7c59" r="15"></circle>
+                                    <circle cx="15" cy="-48" fill="white" r="3"></circle>
+                                    <circle cx="25" cy="-48" fill="white" r="3"></circle>
+                                    <path d="M15,-42 Q20,-38 25,-42" fill="none" stroke="white" stroke-width="2"></path>
+                                </g>
+                                <!-- Solution connection lines to central device -->
+                                <!-- AI Crop Recommendation -->
+                                <g transform="translate(100, 150)">
+                                    <circle cx="0" cy="0" fill="#8cae7e" opacity="0.8" r="30"></circle>
+                                    <text fill="white" font-family="Poppins" font-size="24" text-anchor="middle" x="0" y="5">🌱</text>
+                                    <line stroke="#4a7c59" stroke-dasharray="5,3" stroke-width="2" x1="30" x2="190" y1="0" y2="100"></line>
+                                </g>
+                                <!-- Weather Forecast -->
+                                <g transform="translate(150, 380)">
+                                    <circle cx="0" cy="0" fill="#8cae7e" opacity="0.8" r="30"></circle>
+                                    <text fill="white" font-family="Poppins" font-size="24" text-anchor="middle" x="0" y="5">⛅</text>
+                                    <line stroke="#4a7c59" stroke-dasharray="5,3" stroke-width="2" x1="10" x2="190" y1="-20" y2="-100"></line>
+                                </g>
+                                <!-- Pest Detection -->
+                                <g transform="translate(350, 380)">
+                                    <circle cx="0" cy="0" fill="#8cae7e" opacity="0.8" r="30"></circle>
+                                    <text fill="white" font-family="Poppins" font-size="24" text-anchor="middle" x="0" y="5">🔍</text>
+                                    <line stroke="#4a7c59" stroke-dasharray="5,3" stroke-width="2" x1="-10" x2="-90" y1="-20" y2="-100"></line>
+                                </g>
+                                <!-- Chatbot -->
+                                <g transform="translate(400, 150)">
+                                    <circle cx="0" cy="0" fill="#8cae7e" opacity="0.8" r="30"></circle>
+                                    <text fill="white" font-family="Poppins" font-size="24" text-anchor="middle" x="0" y="5">💬</text>
+                                    <line stroke="#4a7c59" stroke-dasharray="5,3" stroke-width="2" x1="-30" x2="-140" y1="0" y2="100"></line>
+                                </g>
+                                
+                                <g opacity="0.7" transform="translate(250, 250)">
+                                    <circle cx="0" cy="0" fill="none" r="45" stroke="#4a7c59" stroke-width="2"></circle>
+                                    <circle cx="0" cy="0" fill="none" r="55" stroke="#8cae7e" stroke-width="1"></circle>
+                                    <circle cx="0" cy="0" fill="none" r="65" stroke="#4a7c59" stroke-dasharray="3,3" stroke-width="1"></circle>
+                                    <!-- Central AI hub text -->
+                                </g>
+                                
+                            </svg>
+                            <text fill="#333" font-family="Poppins" font-size="14" text-anchor="middle" x="250" y="320">AI-Powered Farming Assistant</text>
+                                <!-- Data flow animation lines -->
+                        </div>
+                    </div>
+                </div>
+                <div class="footer" style="position: absolute; bottom: 15px; right: 30px; display: flex; align-items: center;">
+                    <div class="logo-text" style="font-size: 1rem; font-weight: 600; color: #2d5d2a; margin-right: 10px;">Farm360°</div>
+                    <div class="w-6 h-6 bg-green-700 rounded-md flex items-center justify-center">
+                        <i class="fas fa-leaf text-white text-xs"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 5: System Workflow -->
+        <div class="slide" id="slide-5">
+            <div class="slide-container" style="width: 100%; min-height: 100vh; position: relative; background-color: #f4f7f1; overflow: hidden;">
+                <div class="title-bar" style="background-color: #2d5d2a; padding: 15px 40px; color: white; font-size: 2rem; font-weight: 600;">
+                    System Workflow
+                </div>
+                <div class="content" style="padding: 30px 60px; height: calc(100vh - 70px); display: flex; flex-direction: column; justify-content: center;">
+                    <div class="subtitle" style="font-size: 1.3rem; color: #4a7c59; margin-bottom: 20px; text-align: center;">How Data Transforms into Actionable Farm Insights</div>
+                    <div class="accent-line" style="width: 80px; height: 3px; background-color: #4a7c59; margin: 5px auto 20px;"></div>
+                    <div class="process-container" style="display: flex; align-items: center; justify-content: space-between; margin: 40px 0;">
+                        <!-- Data Sources Step -->
+                        <div class="process-step" style="display: flex; flex-direction: column; align-items: center; width: 200px; position: relative; z-index: 2;">
+                            <div class="icon-box input" style="width: 100px; height: 100px; border-radius: 20px; background-color: rgba(74, 124, 89, 0.15); display: flex; justify-content: center; align-items: center; box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1); margin-bottom: 15px; position: relative; z-index: 2;">
+                                <div>
+                                    <div class="input-items" style="display: flex; justify-content: center; gap: 15px; margin-bottom: 10px;">
+                                        <div class="input-item" style="display: flex; flex-direction: column; align-items: center;">
+                                            <div class="input-icon bg-blue-50" style="width: 50px; height: 50px; border-radius: 50%; background-color: white; display: flex; justify-content: center; align-items: center; box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1); margin-bottom: 5px;">
+                                                <i class="fas fa-cloud text-blue-500 text-xl"></i>
+                                            </div>
+                                            <span class="input-label" style="font-size: 0.8rem; color: #555;">Weather</span>
+                                        </div>
+                                        <div class="input-item" style="display: flex; flex-direction: column; align-items: center;">
+                                            <div class="input-icon bg-yellow-50" style="width: 50px; height: 50px; border-radius: 50%; background-color: white; display: flex; justify-content: center; align-items: center; box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1); margin-bottom: 5px;">
+                                                <i class="fas fa-seedling text-green-600 text-xl"></i>
+                                            </div>
+                                            <span class="input-label" style="font-size: 0.8rem; color: #555;">Soil</span>
+                                        </div>
+                                        <div class="input-item" style="display: flex; flex-direction: column; align-items: center;">
+                                            <div class="input-icon bg-green-50" style="width: 50px; height: 50px; border-radius: 50%; background-color: white; display: flex; justify-content: center; align-items: center; box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1); margin-bottom: 5px;">
+                                                <i class="fas fa-chart-line text-green-700 text-xl"></i>
+                                            </div>
+                                            <span class="input-label" style="font-size: 0.8rem; color: #555;">Market</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="step-title" style="font-weight: 600; font-size: 1.1rem; color: #2d5d2a; text-align: center; margin-bottom: 8px;">Data Collection</div>
+                            <div class="step-desc" style="font-size: 0.9rem; color: #555; text-align: center; max-width: 180px;">Environmental, soil analysis, and market trend data sources</div>
+                        </div>
+                        <!-- Arrow 1 -->
+                        <div class="arrow-container" style="position: relative; height: 2px; background-color: #4a7c59; flex-grow: 1; margin: 0 10px; z-index: 1;">
+                            <div class="arrow" style="position: absolute; right: 0; top: -4px; width: 0; height: 0; border-top: 5px solid transparent; border-bottom: 5px solid transparent; border-left: 10px solid #4a7c59;"></div>
+                        </div>
+                        <!-- AI Engine Step -->
+                        <div class="process-step" style="display: flex; flex-direction: column; align-items: center; width: 200px; position: relative; z-index: 2;">
+                            <div class="icon-box ai" style="width: 100px; height: 100px; border-radius: 20px; background-color: rgba(45, 93, 42, 0.2); display: flex; justify-content: center; align-items: center; box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1); margin-bottom: 15px; position: relative; z-index: 2;">
+                                <div>
+                                    <i class="fas fa-brain text-4xl text-green-800"></i>
+                                </div>
+                            </div>
+                            <div class="step-title" style="font-weight: 600; font-size: 1.1rem; color: #2d5d2a; text-align: center; margin-bottom: 8px;">AI Processing</div>
+                            <div class="step-desc" style="font-size: 0.9rem; color: #555; text-align: center; max-width: 180px;">Machine learning models analyze patterns and generate recommendations</div>
+                        </div>
+                        <!-- Arrow 2 -->
+                        <div class="arrow-container" style="position: relative; height: 2px; background-color: #4a7c59; flex-grow: 1; margin: 0 10px; z-index: 1;">
+                            <div class="arrow" style="position: absolute; right: 0; top: -4px; width: 0; height: 0; border-top: 5px solid transparent; border-bottom: 5px solid transparent; border-left: 10px solid #4a7c59;"></div>
+                        </div>
+                        <!-- Chatbot Step -->
+                        <div class="process-step" style="display: flex; flex-direction: column; align-items: center; width: 200px; position: relative; z-index: 2;">
+                            <div class="icon-box chatbot" style="width: 100px; height: 100px; border-radius: 20px; background-color: rgba(74, 124, 89, 0.15); display: flex; justify-content: center; align-items: center; box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1); margin-bottom: 15px; position: relative; z-index: 2;">
+                                <div>
+                                    <i class="fas fa-comments text-4xl text-green-700"></i>
+                                </div>
+                            </div>
+                            <div class="step-title" style="font-weight: 600; font-size: 1.1rem; color: #2d5d2a; text-align: center; margin-bottom: 8px;">Farming Chatbot</div>
+                            <div class="step-desc" style="font-size: 0.9rem; color: #555; text-align: center; max-width: 180px;">Conversational interface translates insights into farmer-friendly guidance</div>
+                        </div>
+                        <!-- Arrow 3 -->
+                        <div class="arrow-container" style="position: relative; height: 2px; background-color: #4a7c59; flex-grow: 1; margin: 0 10px; z-index: 1;">
+                            <div class="arrow" style="position: absolute; right: 0; top: -4px; width: 0; height: 0; border-top: 5px solid transparent; border-bottom: 5px solid transparent; border-left: 10px solid #4a7c59;"></div>
+                        </div>
+                        <!-- Farmer Decision Step -->
+                        <div class="process-step" style="display: flex; flex-direction: column; align-items: center; width: 200px; position: relative; z-index: 2;">
+                            <div class="icon-box output" style="width: 100px; height: 100px; border-radius: 20px; background-color: rgba(45, 93, 42, 0.1); display: flex; justify-content: center; align-items: center; box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1); margin-bottom: 15px; position: relative; z-index: 2;">
+                                <div>
+                                    <i class="fas fa-hand-pointer text-4xl text-green-700"></i>
+                                </div>
+                            </div>
+                            <div class="step-title" style="font-weight: 600; font-size: 1.1rem; color: #2d5d2a; text-align: center; margin-bottom: 8px;">Farmer Decisions</div>
+                            <div class="step-desc" style="font-size: 0.9rem; color: #555; text-align: center; max-width: 180px;">Actionable insights lead to informed crop planning and management</div>
+                        </div>
+                    </div>
+                    <div class="mt-8 text-center text-gray-600">
+                        <p class="text-sm italic">The AI-powered system transforms raw agricultural data into actionable insights through a seamless, user-friendly interface</p>
+                    </div>
+                </div>
+                <div class="footer" style="position: absolute; bottom: 15px; right: 30px; display: flex; align-items: center;">
+                    <div class="logo-text" style="font-size: 1rem; font-weight: 600; color: #2d5d2a; margin-right: 10px;">Farm360°</div>
+                    <div class="w-6 h-6 bg-green-700 rounded-md flex items-center justify-center">
+                        <i class="fas fa-leaf text-white text-xs"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 6: Solution Modules -->
+        <div class="slide" id="slide-6">
+            <div class="slide-container" style="width: 100%; min-height: 100vh; position: relative; background-color: #f4f7f1; overflow: hidden;">
+                <div class="title-bar" style="background-color: #2d5d2a; padding: 15px 40px; color: white; font-size: 2rem; font-weight: 600;">
+                    Solution Modules
+                </div>
+                <div class="content" style="padding: 20px 40px;">
+                    <h2 class="text-2xl font-semibold text-green-800">AI-Powered Farming Systems</h2>
+                    <div class="module-grid" style="display: flex; gap: 20px; margin-top: 20px;">
+                        <!-- Weather Interface Module -->
+                        <div class="module-card" style="flex: 1; background-color: white; border-radius: 12px; padding: 20px; box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05); display: flex; flex-direction: column; height: 500px;">
+                            <div class="module-header" style="display: flex; align-items: center; margin-bottom: 15px;">
+                                <div class="module-icon" style="width: 50px; height: 50px; background-color: rgba(45, 93, 42, 0.1); border-radius: 50%; display: flex; justify-content: center; align-items: center; margin-right: 15px;">
+                                    <i class="fas fa-cloud-sun text-green-700 text-2xl"></i>
+                                </div>
+                                <div>
+                                    <div class="module-title" style="font-size: 1.3rem; font-weight: 600; color: #2d5d2a;">Weather Interface</div>
+                                    <div class="module-desc" style="font-size: 0.9rem; color: #555; margin-bottom: 20px;">6-month AI-powered weather forecasting</div>
+                                </div>
+                            </div>
+                            <div class="chart-container" style="flex-grow: 1; position: relative; width: 100%;">
+                                <canvas id="weatherChart"></canvas>
+                            </div>
+                            <div class="weather-grid" style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-top: 15px;">
+                                <div class="weather-day" style="background-color: #f8faf5; border-radius: 8px; padding: 10px; text-align: center;">
+                                    <div class="weather-icon" style="font-size: 1.8rem; margin-bottom: 5px; color: #4a7c59;">
+                                        <i class="fas fa-sun"></i>
+                                    </div>
+                                    <div class="weather-temp" style="font-weight: 600; font-size: 1.1rem;">28°C</div>
+                                    <div class="weather-date" style="font-size: 0.8rem; color: #777;">Today</div>
+                                </div>
+                                <div class="weather-day" style="background-color: #f8faf5; border-radius: 8px; padding: 10px; text-align: center;">
+                                    <div class="weather-icon" style="font-size: 1.8rem; margin-bottom: 5px; color: #4a7c59;">
+                                        <i class="fas fa-cloud-sun"></i>
+                                    </div>
+                                    <div class="weather-temp" style="font-weight: 600; font-size: 1.1rem;">26°C</div>
+                                    <div class="weather-date" style="font-size: 0.8rem; color: #777;">Tomorrow</div>
+                                </div>
+                                <div class="weather-day" style="background-color: #f8faf5; border-radius: 8px; padding: 10px; text-align: center;">
+                                    <div class="weather-icon" style="font-size: 1.8rem; margin-bottom: 5px; color: #4a7c59;">
+                                        <i class="fas fa-cloud-rain"></i>
+                                    </div>
+                                    <div class="weather-temp" style="font-weight: 600; font-size: 1.1rem;">23°C</div>
+                                    <div class="weather-date" style="font-size: 0.8rem; color: #777;">Wed</div>
+                                </div>
+                            </div>
+                            <div class="sensor-icons" style="display: flex; justify-content: center; gap: 15px; margin-top: 15px;">
+                                <div class="sensor-icon" style="width: 40px; height: 40px; background-color: #e6f0e3; border-radius: 6px; display: flex; justify-content: center; align-items: center;">
+                                    <i class="fas fa-thermometer-half text-green-700"></i>
+                                </div>
+                                <div class="sensor-icon" style="width: 40px; height: 40px; background-color: #e6f0e3; border-radius: 6px; display: flex; justify-content: center; align-items: center;">
+                                    <i class="fas fa-wind text-green-700"></i>
+                                </div>
+                                <div class="sensor-icon" style="width: 40px; height: 40px; background-color: #e6f0e3; border-radius: 6px; display: flex; justify-content: center; align-items: center;">
+                                    <i class="fas fa-tint text-green-700"></i>
+                                </div>
+                                <div class="sensor-icon" style="width: 40px; height: 40px; background-color: #e6f0e3; border-radius: 6px; display: flex; justify-content: center; align-items: center;">
+                                    <i class="fas fa-sun text-green-700"></i>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- Market Intelligence Module -->
+                        <div class="module-card" style="flex: 1; background-color: white; border-radius: 12px; padding: 20px; box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05); display: flex; flex-direction: column; height: 500px;">
+                            <div class="module-header" style="display: flex; align-items: center; margin-bottom: 15px;">
+                                <div class="module-icon" style="width: 50px; height: 50px; background-color: rgba(45, 93, 42, 0.1); border-radius: 50%; display: flex; justify-content: center; align-items: center; margin-right: 15px;">
+                                    <i class="fas fa-chart-line text-green-700 text-2xl"></i>
+                                </div>
+                                <div>
+                                    <div class="module-title" style="font-size: 1.3rem; font-weight: 600; color: #2d5d2a;">Market Intelligence</div>
+                                    <div class="module-desc" style="font-size: 0.9rem; color: #555; margin-bottom: 20px;">Real-time price analysis & forecasting</div>
+                                </div>
+                            </div>
+                            <div class="chart-container" style="flex-grow: 1; position: relative; width: 100%;">
+                                <canvas id="marketChart"></canvas>
+                            </div>
+                            <div class="mt-4">
+                                <div class="market-data-row" style="display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid #eee;">
+                                    <div class="market-commodity" style="font-weight: 500; display: flex; align-items: center;">
+                                        <span>Wheat</span>
+                                        <span class="trend-icon up-trend" style="margin-left: 8px; color: #22c55e;"><i class="fas fa-arrow-up"></i> 3.2%</span>
+                                    </div>
+                                    <div>₹2,247/quintal</div>
+                                </div>
+                                <div class="market-data-row" style="display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid #eee;">
+                                    <div class="market-commodity" style="font-weight: 500; display: flex; align-items: center;">
+                                        <span>Rice</span>
+                                        <span class="trend-icon up-trend" style="margin-left: 8px; color: #22c55e;"><i class="fas fa-arrow-up"></i> 1.8%</span>
+                                    </div>
+                                    <div>₹2,985/quintal</div>
+                                </div>
+                                <div class="market-data-row" style="display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid #eee;">
+                                    <div class="market-commodity" style="font-weight: 500; display: flex; align-items: center;">
+                                        <span>Soybean</span>
+                                        <span class="trend-icon down-trend" style="margin-left: 8px; color: #ef4444;"><i class="fas fa-arrow-down"></i> 0.7%</span>
+                                    </div>
+                                    <div>₹4,152/quintal</div>
+                                </div>
+                                <div class="market-data-row" style="display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid #eee;">
+                                    <div class="market-commodity" style="font-weight: 500; display: flex; align-items: center;">
+                                        <span>Cotton</span>
+                                        <span class="trend-icon up-trend" style="margin-left: 8px; color: #22c55e;"><i class="fas fa-arrow-up"></i> 2.5%</span>
+                                    </div>
+                                    <div>₹6,320/quintal</div>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- Crop Management Module -->
+                        <div class="module-card" style="flex: 1; background-color: white; border-radius: 12px; padding: 20px; box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05); display: flex; flex-direction: column; height: 500px;">
+                            <div class="module-header" style="display: flex; align-items: center; margin-bottom: 15px;">
+                                <div class="module-icon" style="width: 50px; height: 50px; background-color: rgba(45, 93, 42, 0.1); border-radius: 50%; display: flex; justify-content: center; align-items: center; margin-right: 15px;">
+                                    <i class="fas fa-seedling text-green-700 text-2xl"></i>
+                                </div>
+                                <div>
+                                    <div class="module-title" style="font-size: 1.3rem; font-weight: 600; color: #2d5d2a;">Crop Management</div>
+                                    <div class="module-desc" style="font-size: 0.9rem; color: #555; margin-bottom: 20px;">AI-powered lifecycle optimization</div>
+                                </div>
+                            </div>
+                            <div class="chart-container" style="flex-grow: 1; position: relative; width: 100%;">
+                                <canvas id="cropChart"></canvas>
+                            </div>
+                            <div class="crop-lifecycle" style="display: flex; justify-content: space-between; margin-top: 20px; position: relative;">
+                                <div class="progress-line" style="position: absolute; height: 4px; background-color: #4a7c59; top: 25px; left: 30px; right: 30px; z-index: 0;"></div>
+                                <div class="lifecycle-stage" style="text-align: center; width: 60px;">
+                                    <div class="stage-icon" style="width: 50px; height: 50px; background-color: #e6f0e3; border-radius: 50%; display: flex; justify-content: center; align-items: center; margin: 0 auto 8px;">
+                                        <i class="fas fa-leaf text-green-700"></i>
+                                    </div>
+                                    <div class="stage-name" style="font-size: 0.8rem; color: #444;">Seeding</div>
+                                </div>
+                                <div class="lifecycle-stage" style="text-align: center; width: 60px;">
+                                    <div class="stage-icon" style="width: 50px; height: 50px; background-color: #e6f0e3; border-radius: 50%; display: flex; justify-content: center; align-items: center; margin: 0 auto 8px;">
+                                        <i class="fas fa-seedling text-green-700"></i>
+                                    </div>
+                                    <div class="stage-name" style="font-size: 0.8rem; color: #444;">Growth</div>
+                                </div>
+                                <div class="lifecycle-stage" style="text-align: center; width: 60px;">
+                                    <div class="stage-icon" style="width: 50px; height: 50px; background-color: #e6f0e3; border-radius: 50%; display: flex; justify-content: center; align-items: center; margin: 0 auto 8px;">
+                                        <i class="fas fa-spa text-green-700"></i>
+                                    </div>
+                                    <div class="stage-name" style="font-size: 0.8rem; color: #444;">Flowering</div>
+                                </div>
+                                <div class="lifecycle-stage" style="text-align: center; width: 60px;">
+                                    <div class="stage-icon" style="width: 50px; height: 50px; background-color: #e6f0e3; border-radius: 50%; display: flex; justify-content: center; align-items: center; margin: 0 auto 8px;">
+                                        <i class="fas fa-apple-alt text-green-700"></i>
+                                    </div>
+                                    <div class="stage-name" style="font-size: 0.8rem; color: #444;">Harvest</div>
+                                </div>
+                            </div>
+                            <div class="flex justify-between mt-4 text-sm">
+                                <div>
+                                    <div class="font-medium">Soil Moisture</div>
+                                    <div class="flex items-center">
+                                        <div class="w-24 h-2 bg-gray-200 rounded-full">
+                                            <div class="w-16 h-2 bg-green-600 rounded-full" style="width: 16px;"></div>
+                                        </div>
+                                        <span class="ml-2">67%</span>
+                                    </div>
+                                </div>
+                                <div>
+                                    <div class="font-medium">Nutrient Level</div>
+                                    <div class="flex items-center">
+                                        <div class="w-24 h-2 bg-gray-200 rounded-full">
+                                            <div class="w-20 h-2 bg-green-600 rounded-full" style="width: 20px;"></div>
+                                        </div>
+                                        <span class="ml-2">82%</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="footer" style="position: absolute; bottom: 15px; right: 30px; display: flex; align-items: center;">
+                    <div class="logo-text" style="font-size: 1rem; font-weight: 600; color: #2d5d2a; margin-right: 10px;">Farm360°</div>
+                    <div class="w-6 h-6 bg-green-700 rounded-md flex items-center justify-center">
+                        <i class="fas fa-leaf text-white text-xs"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 7: Benefits & Outcomes -->
+        <div class="slide" id="slide-7">
+            <div class="slide-container" style="width: 100%; min-height: 100vh; position: relative; background-color: #f4f7f1; overflow: hidden;">
+                <div class="title-bar" style="background-color: #2d5d2a; padding: 15px 40px; color: white; font-size: 2rem; font-weight: 600;">
+                    Benefits & Outcomes
+                </div>
+                <div class="content" style="display: flex; flex-direction: column; height: calc(100vh - 70px); padding: 20px 40px;">
+                    <div class="subtitle" style="color: #2d5d2a; font-size: 1.5rem; font-weight: 600; margin-bottom: 5px;">Impact of AI-Powered Farming Solutions</div>
+                    <div class="accent-line" style="width: 80px; height: 3px; background-color: #4a7c59; margin: 5px 0 20px 0;"></div>
+                    <div class="benefits-grid" style="display: grid; grid-template-columns: repeat(2, 1fr); grid-template-rows: repeat(2, 1fr); gap: 25px; height: 500px;">
+                        <!-- Higher Profits -->
+                        <div class="benefit-card" style="background-color: white; border-radius: 12px; padding: 20px; box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05); display: flex; flex-direction: column; position: relative;">
+                            <div class="benefit-title" style="font-size: 1.25rem; font-weight: 600; color: #2d5d2a; margin-bottom: 10px; display: flex; align-items: center;">
+                                <i class="fas fa-dollar-sign text-green-700" style="margin-right: 10px; width: 30px; height: 30px; background-color: rgba(45, 93, 42, 0.1); border-radius: 50%; display: flex; justify-content: center; align-items: center;"></i>
+                                Higher Profits
+                            </div>
+                            <div class="comparison-container" style="display: flex; flex-grow: 1; margin-top: 10px;">
+                                <div class="before" style="flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 10px;">
+                                    <div class="label" style="font-size: 0.9rem; color: #666; margin-bottom: 5px;">Traditional Farming</div>
+                                    <div class="chart-container" style="width: 100%; height: 130px; position: relative;">
+                                        <canvas id="profitChart"></canvas>
+                                    </div>
+                                </div>
+                                <div class="divider" style="width: 2px; background-color: #e0e0e0; margin: 0 15px;"></div>
+                                <div class="after" style="flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 10px;">
+                                    <div class="label" style="font-size: 0.9rem; color: #666; margin-bottom: 5px;">With AI Solutions</div>
+                                    <div class="value increased" style="font-size: 1.5rem; font-weight: 600; color: #2d5d2a;">+32% Revenue</div>
+                                    <div class="value increased" style="font-size: 1.5rem; font-weight: 600; color: #2d5d2a;">-18% Costs</div>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- Risk Reduction -->
+                        <div class="benefit-card" style="background-color: white; border-radius: 12px; padding: 20px; box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05); display: flex; flex-direction: column; position: relative;">
+                            <div class="benefit-title" style="font-size: 1.25rem; font-weight: 600; color: #2d5d2a; margin-bottom: 10px; display: flex; align-items: center;">
+                                <i class="fas fa-shield-alt text-green-700" style="margin-right: 10px; width: 30px; height: 30px; background-color: rgba(45, 93, 42, 0.1); border-radius: 50%; display: flex; justify-content: center; align-items: center;"></i>
+                                Risk Reduction
+                            </div>
+                            <div class="comparison-container" style="display: flex; flex-grow: 1; margin-top: 10px;">
+                                <div class="before" style="flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 10px;">
+                                    <div class="label" style="font-size: 0.9rem; color: #666; margin-bottom: 5px;">Traditional Methods</div>
+                                    <div class="value" style="font-size: 1.5rem; font-weight: 600; color: #333;">High Uncertainty</div>
+                                    <div style="display: flex; margin-top: 10px;">
+                                        <i class="fas fa-exclamation-triangle text-red-500 text-xl mx-1"></i>
+                                        <i class="fas fa-exclamation-triangle text-red-500 text-xl mx-1"></i>
+                                        <i class="fas fa-exclamation-triangle text-red-500 text-xl mx-1"></i>
+                                    </div>
+                                </div>
+                                <div class="divider" style="width: 2px; background-color: #e0e0e0; margin: 0 15px;"></div>
+                                <div class="after" style="flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 10px;">
+                                    <div class="label" style="font-size: 0.9rem; color: #666; margin-bottom: 5px;">With AI Prediction</div>
+                                    <div class="value decreased" style="font-size: 1.5rem; font-weight: 600; color: #d32f2f;">Risk Reduced by 65%</div>
+                                    <div style="display: flex; margin-top: 10px;">
+                                        <i class="fas fa-exclamation-triangle text-red-300 text-xl mx-1"></i>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- Sustainable Farming -->
+                        <div class="benefit-card" style="background-color: white; border-radius: 12px; padding: 20px; box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05); display: flex; flex-direction: column; position: relative;">
+                            <div class="benefit-title" style="font-size: 1.25rem; font-weight: 600; color: #2d5d2a; margin-bottom: 10px; display: flex; align-items: center;">
+                                <i class="fas fa-leaf text-green-700" style="margin-right: 10px; width: 30px; height: 30px; background-color: rgba(45, 93, 42, 0.1); border-radius: 50%; display: flex; justify-content: center; align-items: center;"></i>
+                                Sustainable Farming
+                            </div>
+                            <div class="comparison-container" style="display: flex; flex-grow: 1; margin-top: 10px;">
+                                <div class="before" style="flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 10px;">
+                                    <div class="label" style="font-size: 0.9rem; color: #666; margin-bottom: 5px;">Resource Usage</div>
+                                    <div class="sustainability-icon" style="width: 40px; height: 40px; display: flex; justify-content: center; align-items: center; font-size: 1.5rem;">
+                                        <i class="fas fa-tint text-blue-500"></i>
+                                    </div>
+                                    <div class="sustainability-bar" style="width: 100%; height: 20px; background-color: #e0e0e0; border-radius: 10px; overflow: hidden; margin-top: 10px;">
+                                        <div class="sustainability-fill bg-blue-500" style="height: 100%; border-radius: 10px; background-color: #3b82f6; width: 100%"></div>
+                                    </div>
+                                    <div class="sustainability-icon" style="width: 40px; height: 40px; display: flex; justify-content: center; align-items: center; font-size: 1.5rem;">
+                                        <i class="fas fa-flask text-yellow-500"></i>
+                                    </div>
+                                    <div class="sustainability-bar" style="width: 100%; height: 20px; background-color: #e0e0e0; border-radius: 10px; overflow: hidden; margin-top: 10px;">
+                                        <div class="sustainability-fill bg-yellow-500" style="height: 100%; border-radius: 10px; background-color: #f59e0b; width: 100%"></div>
+                                    </div>
+                                </div>
+                                <div class="divider" style="width: 2px; background-color: #e0e0e0; margin: 0 15px;"></div>
+                                <div class="after" style="flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 10px;">
+                                    <div class="label" style="font-size: 0.9rem; color: #666; margin-bottom: 5px;">Optimized Usage</div>
+                                    <div class="sustainability-icon" style="width: 40px; height: 40px; display: flex; justify-content: center; align-items: center; font-size: 1.5rem;">
+                                        <i class="fas fa-tint text-blue-500"></i>
+                                    </div>
+                                    <div class="sustainability-bar" style="width: 100%; height: 20px; background-color: #e0e0e0; border-radius: 10px; overflow: hidden; margin-top: 10px;">
+                                        <div class="sustainability-fill bg-blue-500" style="height: 100%; border-radius: 10px; background-color: #3b82f6; width: 60%"></div>
+                                    </div>
+                                    <div class="sustainability-icon" style="width: 40px; height: 40px; display: flex; justify-content: center; align-items: center; font-size: 1.5rem;">
+                                        <i class="fas fa-flask text-yellow-500"></i>
+                                    </div>
+                                    <div class="sustainability-bar" style="width: 100%; height: 20px; background-color: #e0e0e0; border-radius: 10px; overflow: hidden; margin-top: 10px;">
+                                        <div class="sustainability-fill bg-yellow-500" style="height: 100%; border-radius: 10px; background-color: #f59e0b; width: 45%"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- Empowered Farmers -->
+                        <div class="benefit-card" style="background-color: white; border-radius: 12px; padding: 20px; box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05); display: flex; flex-direction: column; position: relative;">
+                            <div class="benefit-title" style="font-size: 1.25rem; font-weight: 600; color: #2d5d2a; margin-bottom: 10px; display: flex; align-items: center;">
+                                <i class="fas fa-users text-green-700" style="margin-right: 10px; width: 30px; height: 30px; background-color: rgba(45, 93, 42, 0.1); border-radius: 50%; display: flex; justify-content: center; align-items: center;"></i>
+                                Empowered Farmers
+                            </div>
+                            <div class="comparison-container" style="display: flex; flex-grow: 1; margin-top: 10px;">
+                                <div class="before" style="flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 10px;">
+                                    <div class="label" style="font-size: 0.9rem; color: #666; margin-bottom: 5px;">Limited Resources</div>
+                                    <div style="text-align: center; margin-top: 10px;">
+                                        <div style="position: relative; height: 100px; width: 100px; margin: 0 auto;">
+                                            <i class="fas fa-user-circle text-gray-400" style="font-size: 100px;"></i>
+                                            <i class="fas fa-question text-gray-600" style="position: absolute; top: 35px; right: 20px; font-size: 30px;"></i>
+                                        </div>
+                                        <div class="mt-2 text-gray-600">Decision Uncertainty</div>
+                                    </div>
+                                </div>
+                                <div class="divider" style="width: 2px; background-color: #e0e0e0; margin: 0 15px;"></div>
+                                <div class="after" style="flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 10px;">
+                                    <div class="label" style="font-size: 0.9rem; color: #666; margin-bottom: 5px;">With AI Assistant</div>
+                                    <div style="text-align: center; margin-top: 10px;">
+                                        <div style="position: relative; height: 100px; width: 100px; margin: 0 auto;">
+                                            <i class="fas fa-user-circle text-green-600" style="font-size: 100px;"></i>
+                                            <i class="fas fa-lightbulb text-yellow-400" style="position: absolute; top: 25px; right: 15px; font-size: 30px;"></i>
+                                            <i class="fas fa-mobile-alt text-blue-500" style="position: absolute; bottom: 25px; right: 15px; font-size: 25px;"></i>
+                                        </div>
+                                        <div class="mt-2 text-green-700">Informed Decisions</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="footer" style="position: absolute; bottom: 15px; right: 30px; display: flex; align-items: center;">
+                    <div class="logo-text" style="font-size: 1rem; font-weight: 600; color: #2d5d2a; margin-right: 10px;">Farm360°</div>
+                    <div class="w-6 h-6 bg-green-700 rounded-md flex items-center justify-center">
+                        <i class="fas fa-leaf text-white text-xs"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 8: Live Demo -->
+        <div class="slide" id="slide-8">
+            <div class="slide-container" style="width: 100%; min-height: 100vh; position: relative; background-color: #f4f7f1; overflow: hidden;">
+                <div class="title-bar" style="background-color: #2d5d2a; padding: 15px 40px; color: white; font-size: 2rem; font-weight: 600;">
+                    Live Demo
+                </div>
+                <div class="content" style="display: flex; height: calc(100vh - 70px);">
+                    <div class="left-content" style="flex: 1; padding: 30px; display: flex; flex-direction: column; justify-content: center;">
+                        <h2 class="text-2xl font-semibold text-green-800">Experience Our Solution</h2>
+                        <div class="accent-line" style="width: 80px; height: 3px; background-color: #4a7c59; margin: 5px 0 15px 0;"></div>
+                        <p class="info-text" style="font-size: 1.2rem; color: #333; margin-bottom: 30px; line-height: 1.6;">
+                            Our crop recommendation system uses AI to analyze soil conditions, weather patterns, and historical data to provide personalized farming guidance.
+                        </p>
+                        <div class="feature-box" style="background-color: white; border-radius: 12px; padding: 15px; margin-bottom: 15px; box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05); display: flex; align-items: center;">
+                            <div class="feature-icon" style="width: 50px; height: 50px; background-color: rgba(45, 93, 42, 0.1); border-radius: 50%; display: flex; justify-content: center; align-items: center; margin-right: 15px; flex-shrink: 0;">
+                                <i class="fas fa-seedling text-green-700 text-2xl"></i>
+                            </div>
+                            <div>
+                                <strong>Smart Crop Recommendations</strong><br/>
+                                Get AI-powered suggestions for optimal crop selection
+                            </div>
+                        </div>
+                        <div class="feature-box" style="background-color: white; border-radius: 12px; padding: 15px; margin-bottom: 15px; box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05); display: flex; align-items: center;">
+                            <div class="feature-icon" style="width: 50px; height: 50px; background-color: rgba(45, 93, 42, 0.1); border-radius: 50%; display: flex; justify-content: center; align-items: center; margin-right: 15px; flex-shrink: 0;">
+                                <i class="fas fa-robot text-green-700 text-2xl"></i>
+                            </div>
+                            <div>
+                                <strong>Intelligent Farming Chatbot</strong><br/>
+                                24/7 expert guidance on cultivation techniques
+                            </div>
+                        </div>
+                        <div class="feature-box" style="background-color: white; border-radius: 12px; padding: 15px; margin-bottom: 15px; box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05); display: flex; align-items: center;">
+                            <div class="feature-icon" style="width: 50px; height: 50px; background-color: rgba(45, 93, 42, 0.1); border-radius: 50%; display: flex; justify-content: center; align-items: center; margin-right: 15px; flex-shrink: 0;">
+                                <i class="fas fa-chart-line text-green-700 text-2xl"></i>
+                            </div>
+                            <div>
+                                <strong>Yield Prediction</strong><br/>
+                                Accurate forecasts based on multiple data points
+                            </div>
+                        </div>
+                        <a class="demo-button" href="https://crop-recommendation-system-machine.onrender.com" target="_blank" style="background-color: #2d5d2a; color: white; padding: 10px 20px; border-radius: 8px; text-align: center; font-weight: 500; text-decoration: none; display: inline-block; transition: background-color 0.3s; margin-top: 20px;">
+                            <i class="fas fa-external-link-alt mr-2"></i> Try Live Demo
+                        </a>
+                    </div>
+                    <div class="right-content" style="flex: 1; padding: 30px; display: flex; flex-direction: column; justify-content: center;">
+                        <div class="flex flex-col items-center justify-center h-full">
+                            <!-- App Screenshot Mockup -->
+                            <div class="relative w-full max-w-md">
+                                <svg class="app-screenshot" viewbox="0 0 400 300" style="width: 100%; border-radius: 8px; box-shadow: 0 6px 15px rgba(0, 0, 0, 0.1); border: 1px solid #e0e0e0;" xmlns="http://www.w3.org/2000/svg">
+                                    <!-- Browser window mockup -->
+                                    <rect fill="#ffffff" height="300" rx="8" stroke="#e0e0e0" stroke-width="1" width="400" x="0" y="0"></rect>
+                                    <!-- Browser header -->
+                                    <rect fill="#f0f0f0" height="30" rx="8 8 0 0" width="400" x="0" y="0"></rect>
+                                    <circle cx="20" cy="15" fill="#ff6b6b" r="5"></circle>
+                                    <circle cx="40" cy="15" fill="#ffd93d" r="5"></circle>
+                                    <circle cx="60" cy="15" fill="#6bff6b" r="5"></circle>
+                                    <!-- URL bar -->
+                                    <rect fill="#e0e0e0" height="14" rx="7" width="300" x="80" y="8"></rect>
+                                    <text fill="#555" font-family="Poppins" font-size="10" x="95" y="19">crop-recommendation-system-machine.onrender.com</text>
+                                    <!-- App content -->
+                                    <rect fill="#2d5d2a" height="50" rx="4" width="360" x="20" y="40"></rect>
+                                    <text fill="white" font-family="Poppins" font-size="16" font-weight="bold" x="40" y="70">AI Crop Recommendation System</text>
+                                    <!-- Input form mockup -->
+                                    <rect fill="#f9f9f9" height="180" rx="4" stroke="#e0e0e0" stroke-width="1" width="170" x="20" y="100"></rect>
+                                    <!-- Form fields -->
+                                    <rect fill="#e6f0e3" height="20" rx="4" width="150" x="30" y="120"></rect>
+                                    <text fill="#555" font-family="Poppins" font-size="10" x="40" y="134">Nitrogen (N): 90</text>
+                                    <rect fill="#e6f0e3" height="20" rx="4" width="150" x="30" y="150"></rect>
+                                    <text fill="#555" font-family="Poppins" font-size="10" x="40" y="164">Phosphorus (P): 42</text>
+                                    <rect fill="#e6f0e3" height="20" rx="4" width="150" x="30" y="180"></rect>
+                                    <text fill="#555" font-family="Poppins" font-size="10" x="40" y="194">Potassium (K): 43</text>
+                                    <rect fill="#e6f0e3" height="20" rx="4" width="150" x="30" y="210"></rect>
+                                    <text fill="#555" font-family="Poppins" font-size="10" x="40" y="224">Temperature: 20.8°C</text>
+                                    <rect fill="#2d5d2a" height="20" rx="4" width="150" x="30" y="240"></rect>
+                                    <text fill="white" font-family="Poppins" font-size="10" font-weight="bold" x="70" y="254">Predict Crop</text>
+                                    <!-- Results panel -->
+                                    <rect fill="#f9f9f9" height="180" rx="4" stroke="#e0e0e0" stroke-width="1" width="180" x="200" y="100"></rect>
+                                    <text fill="#2d5d2a" font-family="Poppins" font-size="14" font-weight="bold" x="220" y="130">Recommended Crop</text>
+                                    <circle cx="250" cy="170" fill="#4a7c59" r="40"></circle>
+                                    <path d="M230,170 Q250,140 270,170 Q250,200 230,170" fill="#6ca678"></path>
+                                    <text fill="#2d5d2a" font-family="Poppins" font-size="16" font-weight="bold" x="220" y="230">Rice</text>
+                                    <text fill="#555" font-family="Poppins" font-size="10" x="220" y="250">95% confidence</text>
+                                </svg>
+                            </div>
+                            <div class="qr-container" style="display: flex; flex-direction: column; align-items: center; margin-top: 20px;">
+                                <!-- QR Code -->
+                                <svg class="qr-code" viewbox="0 0 100 100" style="width: 120px; height: 120px; background-color: white; padding: 10px; border-radius: 8px; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);" xmlns="http://www.w3.org/2000/svg">
+                                    <!-- Simple QR code representation -->
+                                    <rect fill="white" height="100" width="100" x="0" y="0"></rect>
+                                    <!-- QR code pattern -->
+                                    <g fill="#000">
+                                        <!-- Position markers -->
+                                        <rect height="20" width="20" x="10" y="10"></rect>
+                                        <rect fill="white" height="10" width="10" x="15" y="15"></rect>
+                                        <rect height="20" width="20" x="70" y="10"></rect>
+                                        <rect fill="white" height="10" width="10" x="75" y="15"></rect>
+                                        <rect height="20" width="20" x="10" y="70"></rect>
+                                        <rect fill="white" height="10" width="10" x="15" y="75"></rect>
+                                        <!-- QR code data pattern (simplified) -->
+                                        <rect height="5" width="5" x="40" y="10"></rect>
+                                        <rect height="5" width="5" x="50" y="10"></rect>
+                                        <rect height="5" width="5" x="60" y="10"></rect>
+                                        <rect height="5" width="5" x="10" y="40"></rect>
+                                        <rect height="5" width="5" x="20" y="40"></rect>
+                                        <rect height="5" width="5" x="40" y="40"></rect>
+                                        <rect height="5" width="5" x="70" y="40"></rect>
+                                        <rect height="5" width="5" x="85" y="40"></rect>
+                                        <rect height="5" width="5" x="30" y="50"></rect>
+                                        <rect height="5" width="5" x="50" y="50"></rect>
+                                        <rect height="5" width="5" x="65" y="50"></rect>
+                                        <rect height="5" width="5" x="40" y="60"></rect>
+                                        <rect height="5" width="5" x="60" y="60"></rect>
+                                        <rect height="5" width="5" x="40" y="70"></rect>
+                                        <rect height="5" width="5" x="50" y="70"></rect>
+                                        <rect height="5" width="5" x="70" y="70"></rect>
+                                        <rect height="5" width="5" x="80" y="80"></rect>
+                                        <rect height="5" width="5" x="60" y="85"></rect>
+                                    </g>
+                                </svg>
+                                <p class="qr-text" style="margin-top: 10px; font-size: 0.9rem; color: #555; text-align: center;">Scan to access the live application</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="footer" style="position: absolute; bottom: 15px; right: 30px; display: flex; align-items: center;">
+                    <div class="logo-text" style="font-size: 1rem; font-weight: 600; color: #2d5d2a; margin-right: 10px;">Farm360°</div>
+                    <div class="w-6 h-6 bg-green-700 rounded-md flex items-center justify-center">
+                        <i class="fas fa-leaf text-white text-xs"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 9: Future Scope -->
+        <div class="slide" id="slide-9">
+            <div class="slide-container" style="width: 100%; min-height: 100vh; position: relative; background-color: #f4f7f1; overflow: hidden;">
+                <div class="title-bar" style="background-color: #2d5d2a; padding: 15px 40px; color: white; font-size: 2rem; font-weight: 600;">
+                    Future Scope
+                </div>
+                <div class="content" style="display: flex; height: calc(100vh - 70px);">
+                    <div class="left-content" style="flex: 1; padding: 30px; display: flex; flex-direction: column; justify-content: center;">
+                        <h2 class="text-2xl font-semibold text-green-800">Expanding AI Frontiers in Agriculture</h2>
+                        <div class="accent-line" style="width: 80px; height: 3px; background-color: #4a7c59; margin: 5px 0 15px 0;"></div>
+                        <p class="info-text" style="font-size: 1.2rem; color: #333; margin-bottom: 30px; line-height: 1.6;">
+                            Our vision extends beyond current capabilities, pioneering next-generation agricultural intelligence that will transform farming practices globally and ensure sustainable food security.
+                        </p>
+                        <div class="future-container" style="display: flex; flex-direction: column; gap: 20px; margin-top: 30px;">
+                            <div class="future-item" style="background-color: white; border-radius: 12px; padding: 15px; box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05); display: flex; align-items: center; transition: transform 0.3s ease;">
+                                <div class="icon-box" style="width: 60px; height: 60px; background-color: rgba(45, 93, 42, 0.1); border-radius: 50%; display: flex; justify-content: center; align-items: center; margin-right: 15px; flex-shrink: 0;">
+                                    <i class="fas fa-satellite text-green-700 text-2xl"></i>
+                                </div>
+                                <div class="future-text" style="font-size: 1rem;">
+                                    <strong>AI + Satellite Data</strong><br/>
+                                    Advanced remote sensing with machine learning for large-scale precision monitoring and forecasting
+                                </div>
+                            </div>
+                            <div class="future-item" style="background-color: white; border-radius: 12px; padding: 15px; box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05); display: flex; align-items: center; transition: transform 0.3s ease;">
+                                <div class="icon-box" style="width: 60px; height: 60px; background-color: rgba(45, 93, 42, 0.1); border-radius: 50%; display: flex; justify-content: center; align-items: center; margin-right: 15px; flex-shrink: 0;">
+                                    <i class="fas fa-microchip text-green-700 text-2xl"></i>
+                                </div>
+                                <div class="future-text" style="font-size: 1rem;">
+                                    <strong>IoT Sensor Networks</strong><br/>
+                                    Self-calibrating field sensors for real-time soil, water, and plant health monitoring across entire farms
+                                </div>
+                            </div>
+                            <div class="future-item" style="background-color: white; border-radius: 12px; padding: 15px; box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05); display: flex; align-items: center; transition: transform 0.3s ease;">
+                                <div class="icon-box" style="width: 60px; height: 60px; background-color: rgba(45, 93, 42, 0.1); border-radius: 50%; display: flex; justify-content: center; align-items: center; margin-right: 15px; flex-shrink: 0;">
+                                    <i class="fas fa-comments text-green-700 text-2xl"></i>
+                                </div>
+                                <div class="future-text" style="font-size: 1rem;">
+                                    <strong>Multilingual Farmer Chatbot</strong><br/>
+                                    Voice-enabled AI assistant supporting 100+ languages and dialects for global accessibility
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="right-content" style="flex: 1; padding: 30px; display: flex; flex-direction: column; justify-content: center;">
+                        <div class="timeline-container" style="position: relative; height: 100%; display: flex; flex-direction: column; justify-content: center; align-items: center;">
+                            <div class="timeline" style="position: relative; width: 100%; height: 450px;">
+                                <div class="timeline-line" style="position: absolute; top: 0; bottom: 0; left: 50%; width: 4px; background-color: #4a7c59; transform: translateX(-50%);"></div>
+                                <div class="timeline-dot" style="position: absolute; left: 50%; width: 16px; height: 16px; background-color: #2d5d2a; border-radius: 50%; transform: translateX(-50%); top: 60px;"></div>
+                                <div class="timeline-item left" style="position: absolute; width: 180px; background-color: white; border-radius: 8px; padding: 12px; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); right: calc(50% + 20px); text-align: right; top: 40px;">
+                                    <div class="timeline-year" style="font-weight: 600; color: #2d5d2a;">2025</div>
+                                    <div>Launch enhanced ML prediction models with 99.55% accuracy</div>
+                                </div>
+                                <div class="timeline-dot" style="position: absolute; left: 50%; width: 16px; height: 16px; background-color: #2d5d2a; border-radius: 50%; transform: translateX(-50%); top: 150px;"></div>
+                                <div class="timeline-item right" style="position: absolute; width: 180px; background-color: white; border-radius: 8px; padding: 12px; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); left: calc(50% + 20px); text-align: left; top: 130px;">
+                                    <div class="timeline-year" style="font-weight: 600; color: #2d5d2a;">2026</div>
+                                    <div>Integrate satellite imagery with field sensors</div>
+                                </div>
+                                <div class="timeline-dot" style="position: absolute; left: 50%; width: 16px; height: 16px; background-color: #2d5d2a; border-radius: 50%; transform: translateX(-50%); top: 240px;"></div>
+                                <div class="timeline-item left" style="position: absolute; width: 180px; background-color: white; border-radius: 8px; padding: 12px; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); right: calc(50% + 20px); text-align: right; top: 220px;">
+                                    <div class="timeline-year" style="font-weight: 600; color: #2d5d2a;">2027</div>
+                                    <div>Deploy multilingual chatbot with voice recognition</div>
+                                </div>
+                                <div class="timeline-dot" style="position: absolute; left: 50%; width: 16px; height: 16px; background-color: #2d5d2a; border-radius: 50%; transform: translateX(-50%); top: 330px;"></div>
+                                <div class="timeline-item right" style="position: absolute; width: 180px; background-color: white; border-radius: 8px; padding: 12px; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); left: calc(50% + 20px); text-align: left; top: 310px;">
+                                    <div class="timeline-year" style="font-weight: 600; color: #2d5d2a;">2028</div>
+                                    <div>Smart drone integration for automated field management</div>
+                                </div>
+                                <div class="timeline-dot" style="position: absolute; left: 50%; width: 16px; height: 16px; background-color: #2d5d2a; border-radius: 50%; transform: translateX(-50%); top: 420px;"></div>
+                                <div class="timeline-item left" style="position: absolute; width: 180px; background-color: white; border-radius: 8px; padding: 12px; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); right: calc(50% + 20px); text-align: right; top: 400px;">
+                                    <div class="timeline-year" style="font-weight: 600; color: #2d5d2a;">2030</div>
+                                    <div>Global AI farming network connecting 1M+ farmers</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="footer" style="position: absolute; bottom: 15px; right: 30px; display: flex; align-items: center;">
+                    <div class="logo-text" style="font-size: 1rem; font-weight: 600; color: #2d5d2a; margin-right: 10px;">Farm360°</div>
+                    <div class="w-6 h-6 bg-green-700 rounded-md flex items-center justify-center">
+                        <i class="fas fa-leaf text-white text-xs"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 10: Conclusion -->
+        <div class="slide" id="slide-10">
+            <div class="slide-container" style="width: 100%; min-height: 100vh; position: relative; background-color: #f4f7f1; overflow: hidden;">
+                <div class="title-bar" style="background-color: #2d5d2a; padding: 15px 40px; color: white; font-size: 2rem; font-weight: 600;">
+                    Conclusion
+                </div>
+                <div class="content" style="display: flex; height: calc(100vh - 70px);">
+                    <div class="left-content" style="flex: 1; padding: 30px; display: flex; flex-direction: column; justify-content: center;">
+                        <h2 class="text-2xl font-semibold text-green-800">Vision of Smart, Data-Driven Farming</h2>
+                        <div class="accent-line" style="width: 80px; height: 3px; background-color: #4a7c59; margin: 5px 0 15px 0;"></div>
+                        <p class="info-text" style="font-size: 1.2rem; color: #333; margin-bottom: 30px; line-height: 1.6;">
+                            Our AI-powered solutions are transforming traditional agriculture into a precise, efficient, and sustainable practice. By merging cutting-edge technology with farming expertise, we're creating a future where data empowers every decision.
+                        </p>
+                        <div class="vision-container" style="display: flex; flex-direction: column; gap: 20px; margin-top: 30px;">
+                            <div class="vision-item" style="background-color: white; border-radius: 12px; padding: 20px; box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05); display: flex; align-items: center; transition: transform 0.3s ease;">
+                                <div class="icon-box" style="width: 60px; height: 60px; background-color: rgba(45, 93, 42, 0.1); border-radius: 50%; display: flex; justify-content: center; align-items: center; margin-right: 20px; flex-shrink: 0;">
+                                    <i class="fas fa-seedling text-green-700 text-2xl"></i>
+                                </div>
+                                <div class="vision-text" style="font-size: 1.1rem;">
+                                    <strong>Precision Yields</strong><br/>
+                                    Data-driven decisions maximize production while minimizing resource usage
+                                </div>
+                            </div>
+                            <div class="vision-item" style="background-color: white; border-radius: 12px; padding: 20px; box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05); display: flex; align-items: center; transition: transform 0.3s ease;">
+                                <div class="icon-box" style="width: 60px; height: 60px; background-color: rgba(45, 93, 42, 0.1); border-radius: 50%; display: flex; justify-content: center; align-items: center; margin-right: 20px; flex-shrink: 0;">
+                                    <i class="fas fa-globe text-green-700 text-2xl"></i>
+                                </div>
+                                <div class="vision-text" style="font-size: 1.1rem;">
+                                    <strong>Sustainable Future</strong><br/>
+                                    Balancing productivity with environmental stewardship
+                                </div>
+                            </div>
+                            <div class="vision-item" style="background-color: white; border-radius: 12px; padding: 20px; box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05); display: flex; align-items: center; transition: transform 0.3s ease;">
+                                <div class="icon-box" style="width: 60px; height: 60px; background-color: rgba(45, 93, 42, 0.1); border-radius: 50%; display: flex; justify-content: center; align-items: center; margin-right: 20px; flex-shrink: 0;">
+                                    <i class="fas fa-users text-green-700 text-2xl"></i>
+                                </div>
+                                <div class="vision-text" style="font-size: 1.1rem;">
+                                    <strong>Farmer Empowerment</strong><br/>
+                                    Technology that works for farmers, not the other way around
+                                </div>
+                            </div>
+                        </div>
+                        <a class="cta-button mt-8" style="background-color: #2d5d2a; color: white; border: none; padding: 12px 25px; border-radius: 50px; font-size: 1.1rem; font-weight: 600; cursor: pointer; margin-top: 20px; display: inline-block; transition: all 0.3s ease; text-decoration: none;">
+                            <i class="fas fa-leaf mr-2"></i> Join Us in Shaping Tomorrow's Agriculture
+                        </a>
+                    </div>
+                    <div class="right-content" style="flex: 1; padding: 30px; display: flex; flex-direction: column; justify-content: center;">
+                        <div class="hero-container" style="position: relative; height: 100%; display: flex; justify-content: center; align-items: center;">
+                            <div class="hero-image-container" style="width: 90%; height: 70%; border-radius: 15px; overflow: hidden; box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1); position: relative;">
+                                <svg height="100%" width="100%" xmlns="http://www.w3.org/2000/svg">
+                                    <defs>
+                                        <pattern height="10" id="smallGrid" patternunits="userSpaceOnUse" width="10">
+                                            <path d="M 10 0 L 0 0 0 10" fill="none" stroke="#4a7c59" stroke-opacity="0.2" stroke-width="0.5"></path>
+                                        </pattern>
+                                        <pattern height="100" id="grid" patternunits="userSpaceOnUse" width="100">
+                                            <rect fill="url(#smallGrid)" height="100" width="100"></rect>
+                                            <path d="M 100 0 L 0 0 0 100" fill="none" stroke="#4a7c59" stroke-opacity="0.3" stroke-width="1"></path>
+                                        </pattern>
+                                    </defs>
+                                    <rect fill="#e6f0e3" height="100%" width="100%"></rect>
+                                    <rect fill="url(#grid)" height="100%" width="100%"></rect>
+                                    <!-- Farm field with data visualization -->
+                                    <g transform="translate(250, 180)">
+                                        <!-- Field -->
+                                        <rect fill="#8cae7e" height="100" width="300" x="-150" y="0"></rect>
+                                        <rect fill="#6ca678" height="100" rx="5" width="300" x="-150" y="-10"></rect>
+                                        <!-- Farm rows -->
+                                        <line stroke="#4a7c59" stroke-width="2" x1="-140" x2="140" y1="10" y2="10"></line>
+                                        <line stroke="#4a7c59" stroke-width="2" x1="-140" x2="140" y1="30" y2="30"></line>
+                                        <line stroke="#4a7c59" stroke-width="2" x1="-140" x2="140" y1="50" y2="50"></line>
+                                        <line stroke="#4a7c59" stroke-width="2" x1="-140" x2="140" y1="70" y2="70"></line>
+                                        <!-- Plants -->
+                                        <g transform="translate(-120, 20)">
+                                            <line stroke="#2d5d2a" stroke-width="2" x1="0" x2="0" y1="0" y2="-25"></line>
+                                            <circle cx="0" cy="-25" fill="#4a7c59" r="8"></circle>
+                                        </g>
+                                        <g transform="translate(-80, 20)">
+                                            <line stroke="#2d5d2a" stroke-width="2" x1="0" x2="0" y1="0" y2="-30"></line>
+                                            <circle cx="0" cy="-30" fill="#4a7c59" r="10"></circle>
+                                        </g>
+                                        <g transform="translate(-40, 20)">
+                                            <line stroke="#2d5d2a" stroke-width="2" x1="0" x2="0" y1="0" y2="-35"></line>
+                                            <circle cx="0" cy="-35" fill="#4a7c59" r="12"></circle>
+                                        </g>
+                                        <g transform="translate(0, 20)">
+                                            <line stroke="#2d5d2a" stroke-width="2" x1="0" x2="0" y1="0" y2="-40"></line>
+                                            <circle cx="0" cy="-40" fill="#4a7c59" r="15"></circle>
+                                        </g>
+                                        <g transform="translate(40, 20)">
+                                            <line stroke="#2d5d2a" stroke-width="2" x1="0" x2="0" y1="0" y2="-38"></line>
+                                            <circle cx="0" cy="-38" fill="#4a7c59" r="14"></circle>
+                                        </g>
+                                        <g transform="translate(80, 20)">
+                                            <line stroke="#2d5d2a" stroke-width="2" x1="0" x2="0" y1="0" y2="-42"></line>
+                                            <circle cx="0" cy="-42" fill="#4a7c59" r="16"></circle>
+                                        </g>
+                                        <g transform="translate(120, 20)">
+                                            <line stroke="#2d5d2a" stroke-width="2" x1="0" x2="0" y1="0" y2="-45"></line>
+                                            <circle cx="0" cy="-45" fill="#4a7c59" r="17"></circle>
+                                        </g>
+                                        <!-- Data visualization elements -->
+                                        <g transform="translate(0, -80)">
+                                            <!-- Central AI hub -->
+                                            <circle cx="0" cy="0" fill="#ffffff" r="30"></circle>
+                                            <text dominant-baseline="middle" fill="#2d5d2a" font-family="Poppins" font-size="18" font-weight="bold" text-anchor="middle" x="0" y="0">AI</text>
+                                            <!-- Connected data points -->
+                                            <g transform="translate(-120, 20)">
+                                                <circle cx="0" cy="-25" fill="#ffffff" r="12"></circle>
+                                                <text dominant-baseline="middle" fill="#2d5d2a" font-family="Poppins" font-size="10" font-weight="bold" text-anchor="middle" x="0" y="-25">Soil</text>
+                                                <line stroke="#4a7c59" stroke-dasharray="5,3" stroke-width="2" x1="0" x2="120" y1="-25" y2="0"></line>
+                                            </g>
+                                            <g transform="translate(-60, -50)">
+                                                <circle cx="0" cy="0" fill="#ffffff" r="12"></circle>
+                                                <text dominant-baseline="middle" fill="#2d5d2a" font-family="Poppins" font-size="10" font-weight="bold" text-anchor="middle" x="0" y="0">Weather</text>
+                                                <line stroke="#4a7c59" stroke-dasharray="5,3" stroke-width="2" x1="0" x2="60" y1="0" y2="0"></line>
+                                            </g>
+                                            <g transform="translate(60, -50)">
+                                                <circle cx="0" cy="0" fill="#ffffff" r="12"></circle>
+                                                <text dominant-baseline="middle" fill="#2d5d2a" font-family="Poppins" font-size="10" font-weight="bold" text-anchor="middle" x="0" y="0">Market</text>
+                                                <line stroke="#4a7c59" stroke-dasharray="5,3" stroke-width="2" x1="0" x2="-60" y1="0" y2="0"></line>
+                                            </g>
+                                            <g transform="translate(120, 20)">
+                                                <circle cx="0" cy="-45" fill="#ffffff" r="12"></circle>
+                                                <text dominant-baseline="middle" fill="#2d5d2a" font-family="Poppins" font-size="10" font-weight="bold" text-anchor="middle" x="0" y="-45">Yield</text>
+                                                <line stroke="#4a7c59" stroke-dasharray="5,3" stroke-width="2" x1="0" x2="-120" y1="-45" y2="0"></line>
+                                            </g>
+                                        </g>
+                                    </g>
+                                </svg>
+                                <div class="hero-image-overlay" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(45, 93, 42, 0.2); display: flex; flex-direction: column; justify-content: flex-end; padding: 30px; color: white;">
+                                    <h3 class="text-2xl font-bold">The Future is Now</h3>
+                                    <p class="mt-2">Data-driven agriculture is revolutionizing how we feed the world</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="footer" style="position: absolute; bottom: 15px; right: 30px; display: flex; align-items: center;">
+                    <div class="logo-text" style="font-size: 1rem; font-weight: 600; color: #2d5d2a; margin-right: 10px;">Farm360°</div>
+                    <div class="w-6 h-6 bg-green-700 rounded-md flex items-center justify-center">
+                        <i class="fas fa-leaf text-white text-xs"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 11: Thank You -->
+        <div class="slide" id="slide-11">
+            <div class="slide-container" style="width: 100%; min-height: 100vh; position: relative; background-color: #f4f7f1; overflow: hidden;">
+                <div class="hexagon-container" style="position: absolute; width: 100%; height: 100%; z-index: 0; opacity: 0.5;">
+                    <div class="hexagon hex1" style="position: absolute; width: 80px; height: 92px; background-color: #4a7c59; clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%); top: 50px; left: 100px; opacity: 0.1;"></div>
+                    <div class="hexagon hex2" style="position: absolute; width: 80px; height: 92px; background-color: #4a7c59; clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%); top: 150px; left: 180px; opacity: 0.1;"></div>
+                    <div class="hexagon hex3" style="position: absolute; width: 80px; height: 92px; background-color: #4a7c59; clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%); top: 100px; right: 150px; opacity: 0.1;"></div>
+                    <div class="hexagon hex4" style="position: absolute; width: 80px; height: 92px; background-color: #4a7c59; clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%); bottom: 120px; left: 200px; opacity: 0.1;"></div>
+                    <div class="hexagon hex5" style="position: absolute; width: 80px; height: 92px; background-color: #4a7c59; clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%); bottom: 80px; right: 180px; opacity: 0.1;"></div>
+                </div>
+                <div class="content" style="position: relative; z-index: 1; height: 100%; display: flex; flex-direction: column; justify-content: center; align-items: center; padding: 40px;">
+                    <h1 class="title" style="font-size: 3.5rem; font-weight: 700; color: #2d5d2a; text-align: center; margin-bottom: 40px;">Thank You</h1>
+                    <div class="accent-line" style="width: 60px; height: 3px; background-color: #4a7c59; margin: 0 auto 15px;"></div>
+                    <div class="contact-container" style="display: flex; justify-content: center; gap: 80px; margin: 20px 0 40px;">
+                        <div class="contact-card" style="background-color: white; padding: 30px; border-radius: 15px; box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08); width: 300px; text-align: center;">
+                            <div class="contact-name" style="font-size: 1.4rem; font-weight: 600; color: #2d5d2a; margin-bottom: 10px;">Shubham Rahile</div>
+                            <div class="contact-title" style="font-size: 1rem; color: #4a7c59; margin-bottom: 20px;">Compuer Engineer</div>
+                            <div class="contact-item" style="display: flex; align-items: center; margin-bottom: 12px; font-size: 0.95rem;">
+                                <div class="icon-circle" style="width: 36px; height: 36px; border-radius: 50%; background-color: rgba(74, 124, 89, 0.15); display: flex; justify-content: center; align-items: center; margin-right: 15px;">
+                                    <i class="fas fa-envelope text-green-700"></i>
+                                </div>
+                                <div>shubhamrahile31@gmail.com</div>
+                            </div>
+                            <div class="contact-item" style="display: flex; align-items: center; margin-bottom: 12px; font-size: 0.95rem;">
+                                <div class="icon-circle" style="width: 36px; height: 36px; border-radius: 50%; background-color: rgba(74, 124, 89, 0.15); display: flex; justify-content: center; align-items: center; margin-right: 15px;">
+                                    <i class="fas fa-phone text-green-700"></i>
+                                </div>
+                                <div>+91 7066884294</div>
+                            </div>
+                            <div class="contact-item" style="display: flex; align-items: center; margin-bottom: 12px; font-size: 0.95rem;">
+                                <!-- <div class="icon-circle" style="width: 36px; height: 36px; border-radius: 50%; background-color: rgba(74, 124, 89, 0.15); display: flex; justify-content: center; align-items: center; margin-right: 15px;">
+                                    <i class="fas fa-globe text-green-700"></i>
+                                </div>
+                                <div>www.Farm360°.com</div> -->
+                            </div>
+                            <div class="flex justify-center mt-6 space-x-4">
+                                <div class="w-8 h-8 bg-green-100 rounded-full flex items-center justify-center">
+                                    <i class="fab fa-linkedin-in text-green-700"></i>
+                                </div>
+                                <div class="w-8 h-8 bg-green-100 rounded-full flex items-center justify-center">
+                                    <i class="fab fa-twitter text-green-700"></i>
+                                </div>
+                                <div class="w-8 h-8 bg-green-100 rounded-full flex items-center justify-center">
+                                    <i class="fab fa-github text-green-700"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <p class="text-gray-600 mt-4 max-w-xl text-center" style="color: #666; margin-top: 20px; max-width: 36rem; text-align: center;">
+                        For more information about our AI agricultural solutions and to explore how we can help transform your farming practices, please reach out.
+                    </p>
+                </div>
+                <div class="footer" style="position: absolute; bottom: 30px; left: 0; right: 0; display: flex; justify-content: center; align-items: center;">
+                    <div class="logo-container" style="display: flex; align-items: center;">
+                        <span class="logo-text" style="font-size: 1.3rem; font-weight: 600; color: #2d5d2a; margin-right: 10px;">Farm360°</span>
+                        <div class="w-10 h-10 bg-green-700 rounded-md flex items-center justify-center">
+                            <i class="fas fa-leaf text-white"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        let currentSlide = 1;
+        const totalSlides = 11;
+        let isFullscreen = false;
+        let autoAdvanceInterval;
+
+        // Initialize presentation
+        function initializePresentation() {
+            createSlideIndicators();
+            updateSlideCounter();
+            updateProgressBar();
+            initializeCharts();
+            
+            // Start auto-advance after 10 seconds
+            setTimeout(() => {
+                startAutoAdvance(10000);
+            }, 3000);
+        }
+
+        // Create slide indicators
+        function createSlideIndicators() {
+            const indicatorsContainer = document.getElementById('slide-indicators');
+            indicatorsContainer.innerHTML = '';
+            
+            for (let i = 1; i <= totalSlides; i++) {
+                const indicator = document.createElement('div');
+                indicator.className = 'slide-indicator';
+                if (i === currentSlide) indicator.classList.add('active');
+                indicator.addEventListener('click', () => goToSlide(i));
+                indicatorsContainer.appendChild(indicator);
+            }
+        }
+
+        // Navigation functions
+        function nextSlide() {
+            if (currentSlide < totalSlides) {
+                document.getElementById(`slide-${currentSlide}`).classList.remove('active');
+                currentSlide++;
+                document.getElementById(`slide-${currentSlide}`).classList.add('active');
+                updateNavigation();
+            }
+        }
+
+        function prevSlide() {
+            if (currentSlide > 1) {
+                document.getElementById(`slide-${currentSlide}`).classList.remove('active');
+                currentSlide--;
+                document.getElementById(`slide-${currentSlide}`).classList.add('active');
+                updateNavigation();
+            }
+        }
+
+        function goToSlide(slideNumber) {
+            if (slideNumber >= 1 && slideNumber <= totalSlides) {
+                document.getElementById(`slide-${currentSlide}`).classList.remove('active');
+                currentSlide = slideNumber;
+                document.getElementById(`slide-${currentSlide}`).classList.add('active');
+                updateNavigation();
+            }
+        }
+
+        function updateNavigation() {
+            updateSlideCounter();
+            updateProgressBar();
+            updateSlideIndicators();
+        }
+
+        function updateSlideCounter() {
+            document.getElementById('current-slide').textContent = currentSlide;
+            document.getElementById('total-slides').textContent = totalSlides;
+        }
+
+        function updateProgressBar() {
+            const progress = ((currentSlide - 1) / (totalSlides - 1)) * 100;
+            document.getElementById('progress-bar').style.width = `${progress}%`;
+        }
+
+        function updateSlideIndicators() {
+            const indicators = document.querySelectorAll('.slide-indicator');
+            indicators.forEach((indicator, index) => {
+                if (index + 1 === currentSlide) {
+                    indicator.classList.add('active');
+                } else {
+                    indicator.classList.remove('active');
+                }
+            });
+        }
+
+        // Fullscreen toggle
+        function toggleFullscreen() {
+            const elem = document.documentElement;
+            
+            if (!isFullscreen) {
+                if (elem.requestFullscreen) {
+                    elem.requestFullscreen();
+                } else if (elem.webkitRequestFullscreen) {
+                    elem.webkitRequestFullscreen();
+                } else if (elem.msRequestFullscreen) {
+                    elem.msRequestFullscreen();
+                }
+                isFullscreen = true;
+            } else {
+                if (document.exitFullscreen) {
+                    document.exitFullscreen();
+                } else if (document.webkitExitFullscreen) {
+                    document.webkitExitFullscreen();
+                } else if (document.msExitFullscreen) {
+                    document.msExitFullscreen();
+                }
+                isFullscreen = false;
+            }
+        }
+
+        // Keyboard navigation
+        document.addEventListener('keydown', (e) => {
+            switch(e.key) {
+                case 'ArrowRight':
+                case ' ':
+                case 'PageDown':
+                    nextSlide();
+                    e.preventDefault();
+                    break;
+                case 'ArrowLeft':
+                case 'PageUp':
+                    prevSlide();
+                    e.preventDefault();
+                    break;
+                case 'Home':
+                    goToSlide(1);
+                    e.preventDefault();
+                    break;
+                case 'End':
+                    goToSlide(totalSlides);
+                    e.preventDefault();
+                    break;
+                case 'Escape':
+                    if (isFullscreen) {
+                        toggleFullscreen();
+                    }
+                    break;
+            }
+        });
+
+        // Touch/swipe support for mobile
+        let touchStartX = 0;
+        let touchStartY = 0;
+        let touchEndX = 0;
+        let touchEndY = 0;
+
+        document.addEventListener('touchstart', e => {
+            touchStartX = e.changedTouches[0].screenX;
+            touchStartY = e.changedTouches[0].screenY;
+        });
+
+        document.addEventListener('touchend', e => {
+            touchEndX = e.changedTouches[0].screenX;
+            touchEndY = e.changedTouches[0].screenY;
+            handleSwipe();
+        });
+
+        function handleSwipe() {
+            const swipeThreshold = 50;
+            const xDiff = touchStartX - touchEndX;
+            const yDiff = touchStartY - touchEndY;
+            
+            // Only consider horizontal swipes that are more horizontal than vertical
+            if (Math.abs(xDiff) > Math.abs(yDiff) && Math.abs(xDiff) > swipeThreshold) {
+                if (xDiff > 0) {
+                    // Swipe left - next slide
+                    nextSlide();
+                } else {
+                    // Swipe right - previous slide
+                    prevSlide();
+                }
+            }
+        }
+
+        // Auto-advance slides
+        function startAutoAdvance(interval = 10000) {
+            stopAutoAdvance();
+            autoAdvanceInterval = setInterval(() => {
+                if (currentSlide < totalSlides) {
+                    nextSlide();
+                } else {
+                    stopAutoAdvance();
+                }
+            }, interval);
+        }
+
+        function stopAutoAdvance() {
+            if (autoAdvanceInterval) {
+                clearInterval(autoAdvanceInterval);
+                autoAdvanceInterval = null;
+            }
+        }
+
+        // Pause auto-advance on user interaction
+        document.addEventListener('mousedown', stopAutoAdvance);
+        document.addEventListener('touchstart', stopAutoAdvance);
+        document.addEventListener('keydown', stopAutoAdvance);
+
+        // Resume auto-advance after 30 seconds of inactivity
+        let inactivityTimer;
+        function resetInactivityTimer() {
+            clearTimeout(inactivityTimer);
+            inactivityTimer = setTimeout(() => {
+                startAutoAdvance(10000);
+            }, 30000);
+        }
+
+        // Listen for user activity
+        ['mousemove', 'mousedown', 'touchstart', 'touchmove', 'keydown'].forEach(event => {
+            document.addEventListener(event, resetInactivityTimer);
+        });
+
+        // Initialize charts
+        function initializeCharts() {
+            // Weather Chart
+            const weatherCtx = document.getElementById('weatherChart');
+            if (weatherCtx) {
+                new Chart(weatherCtx.getContext('2d'), {
+                    type: 'line',
+                    data: {
+                        labels: ['Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov'],
+                        datasets: [{
+                            label: 'Rainfall (mm)',
+                            data: [45, 120, 180, 150, 80, 30],
+                            backgroundColor: 'rgba(74, 124, 89, 0.2)',
+                            borderColor: '#4a7c59',
+                            tension: 0.4,
+                            fill: true
+                        }, {
+                            label: 'Temperature (°C)',
+                            data: [28, 29, 27, 26, 24, 22],
+                            backgroundColor: 'rgba(220, 165, 80, 0.2)',
+                            borderColor: '#dca550',
+                            tension: 0.4,
+                            fill: false,
+                            yAxisID: 'y1'
+                        }]
+                    },
+                    options: {
+                        maintainAspectRatio: false,
+                        responsive: true,
+                        scales: {
+                            y: {
+                                beginAtZero: true,
+                                title: {
+                                    display: true,
+                                    text: 'Rainfall (mm)'
+                                }
+                            },
+                            y1: {
+                                position: 'right',
+                                beginAtZero: false,
+                                min: 18,
+                                max: 35,
+                                title: {
+                                    display: true,
+                                    text: 'Temperature (°C)'
+                                },
+                                grid: {
+                                    drawOnChartArea: false
+                                }
+                            }
+                        }
+                    }
+                });
+            }
+            
+            // Market Chart
+            const marketCtx = document.getElementById('marketChart');
+            if (marketCtx) {
+                new Chart(marketCtx.getContext('2d'), {
+                    type: 'line',
+                    data: {
+                        labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug'],
+                        datasets: [{
+                            label: 'Wheat Prices',
+                            data: [2100, 2050, 2150, 2200, 2180, 2220, 2240, 2247],
+                            borderColor: '#2d5d2a',
+                            tension: 0.3,
+                            fill: false
+                        }, {
+                            label: 'Rice Prices',
+                            data: [2800, 2840, 2900, 2950, 2920, 2960, 2970, 2985],
+                            borderColor: '#4a7c59',
+                            tension: 0.3,
+                            fill: false
+                        }]
+                    },
+                    options: {
+                        maintainAspectRatio: false,
+                        responsive: true,
+                        scales: {
+                            y: {
+                                title: {
+                                    display: true,
+                                    text: 'Price (₹/quintal)'
+                                }
+                            }
+                        }
+                    }
+                });
+            }
+            
+            // Crop Chart
+            const cropCtx = document.getElementById('cropChart');
+            if (cropCtx) {
+                new Chart(cropCtx.getContext('2d'), {
+                    type: 'bar',
+                    data: {
+                        labels: ['Wheat', 'Rice', 'Maize', 'Soybean'],
+                        datasets: [{
+                            label: 'Traditional Yield',
+                            data: [25, 30, 22, 18],
+                            backgroundColor: 'rgba(200, 200, 200, 0.6)'
+                        }, {
+                            label: 'AI-Optimized Yield',
+                            data: [32, 38, 28, 24],
+                            backgroundColor: 'rgba(74, 124, 89, 0.6)'
+                        }]
+                    },
+                    options: {
+                        maintainAspectRatio: false,
+                        responsive: true,
+                        scales: {
+                            y: {
+                                beginAtZero: true,
+                                title: {
+                                    display: true,
+                                    text: 'Quintals per Acre'
+                                }
+                            }
+                        }
+                    }
+                });
+            }
+            
+            // Profit Chart (for slide 7)
+            const profitCtx = document.getElementById('profitChart');
+            if (profitCtx) {
+                new Chart(profitCtx.getContext('2d'), {
+                    type: 'bar',
+                    data: {
+                        labels: ['Revenue', 'Costs', 'Profit'],
+                        datasets: [{
+                            label: 'Traditional Farming',
+                            data: [100, 80, 20],
+                            backgroundColor: [
+                                'rgba(75, 192, 75, 0.5)',
+                                'rgba(255, 99, 132, 0.5)',
+                                'rgba(54, 162, 235, 0.5)'
+                            ],
+                            borderColor: [
+                                'rgba(75, 192, 75, 1)',
+                                'rgba(255, 99, 132, 1)',
+                                'rgba(54, 162, 235, 1)'
+                            ],
+                            borderWidth: 1
+                        }]
+                    },
+                    options: {
+                        maintainAspectRatio: false,
+                        responsive: true,
+                        scales: {
+                            y: {
+                                beginAtZero: true,
+                                max: 120,
+                                ticks: {
+                                    callback: function(value) {
+                                        return value + '%';
+                                    }
+                                }
+                            }
+                        },
+                        plugins: {
+                            legend: {
+                                display: false
+                            }
+                        }
+                    }
+                });
+            }
+        }
+
+        // Print functionality
+        document.addEventListener('keydown', (e) => {
+            if ((e.ctrlKey || e.metaKey) && e.key === 'p') {
+                e.preventDefault();
+                window.print();
+            }
+        });
+
+        // Initialize on load
+        document.addEventListener('DOMContentLoaded', initializePresentation);
+    </script>
+</body>
+</html>
